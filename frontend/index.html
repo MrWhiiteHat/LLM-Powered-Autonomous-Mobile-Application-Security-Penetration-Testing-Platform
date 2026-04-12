@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Mobile Security Agent — Autonomous AI-powered mobile application security penetration testing platform.">
+    <title>Ai Power Mobile Security Agents - Project Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css?v=2.0">
+</head>
+
+<body>
+    <!-- Main Content -->
+    <header id="main-header">
+        <nav class="nav-container">
+            <a href="#" class="nav-logo" id="nav-logo">
+                <div class="logo-symbol">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <path d="M14 2L2 8v12l12 6 12-6V8L14 2z" stroke="currentColor" stroke-width="1.5" fill="none" />
+                        <path d="M14 8l-6 3v6l6 3 6-3v-6l-6-3z" fill="currentColor" opacity="0.3" />
+                        <circle cx="14" cy="14" r="3" fill="currentColor" />
+                    </svg>
+                </div>
+                <span class="logo-text">MSA</span>
+            </a>
+            <div class="nav-center" id="nav-links">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How it Works</a>
+                <a href="#scan" class="nav-link">Scan</a>
+            </div>
+            <div class="nav-right">
+                <div class="status-pill" id="server-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+                <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div class="mobile-menu hidden" id="mobile-menu">
+            <a href="#about" class="mobile-link">About</a>
+            <a href="#features" class="mobile-link">Features</a>
+            <a href="#how-it-works" class="mobile-link">How it Works</a>
+            <a href="#scan" class="mobile-link">Scan</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section" id="hero">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-tag">AI-POWERED</span>
+                    <span class="badge-text">Your Security Agent →</span>
+                </div>
+                <h1 class="hero-title">
+                    Ai Power Mobile<br>
+                    Security Agents
+                </h1>
+                <div class="hero-image-container">
+                    <img src="/static/images/hero-front.png" alt="AI Security Agent" class="hero-image" id="hero-img">
+                    <div class="hero-image-glow"></div>
+                </div>
+                <h2 class="hero-subtitle">
+                    with trusted AI<br>Agents.
+                </h2>
+                <div class="hero-cta-group">
+                    <a href="#scan" class="btn btn-primary" id="hero-scan-btn">START SCANNING</a>
+                    <a href="#features" class="btn btn-outline-accent">LEARN MORE</a>
+                </div>
+                <p class="hero-desc">
+                    MSA pairs powerful AI with static analysis, reverse engineering,
+                    and dynamic testing so your team can automate mobile security without losing control.
+                </p>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section" id="about" style="padding: 5rem 2rem; max-width: 1200px; margin: 0 auto;">
+            <div class="section-header">
+                <span class="section-badge">IN-DEPTH OVERVIEW</span>
+                <h2 class="section-title">Project Architecture &<br><span class="title-accent">Extensive Details.</span>
+                </h2>
+                <p
+                    style="color: var(--text-secondary, #4b5563); margin-top: 1rem; max-width: 800px; margin-left: auto; margin-right: auto; text-align: center; line-height: 1.6;">
+                    The Mobile Security Agent is an advanced, LLM-powered Autonomous Mobile Application Security
+                    Penetration Testing platform designed strictly for authorized, ethical security audits of Android
+                    and iOS mobile applications.
+                </p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 2.5rem;">
+                <!-- Section 1: Core AI & Execution Pipeline -->
+                <div
+                    style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-color, #e5e7eb); border-radius: 12px; padding: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" style="color: var(--primary-color);">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                        <h3 style="color: var(--text-primary, #111827); font-size: 1.5rem; margin: 0;">10-Phase
+                            Autonomous Analysis Workflow</h3>
+                    </div>
+                    <p style="color: var(--text-secondary, #4b5563); line-height: 1.6; margin-bottom: 1.5rem;">The
+                        underlying architecture employs a robust Python-based FastAPI backend that orchestrates a
+                        distributed, AI-driven assessment pipeline involving the following comprehensive modules:</p>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                            <strong style="display: block; color: var(--text-primary); margin-bottom: 0.25rem;">1.
+                                Reconnaissance</strong>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Extracts base application
+                                metadata, scopes the package structures, and prepares the testing environment.</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                            <strong style="display: block; color: var(--text-primary); margin-bottom: 0.25rem;">2.
+                                Static Dissection</strong>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Performs Deep Code
+                                Inspection, scanning AndroidManifest.xml/Info.plist and source files for hardcoded
+                                secrets, misconfigurations, and unsafe exports.</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                            <strong style="display: block; color: var(--text-primary); margin-bottom: 0.25rem;">3.
+                                Reverse Engineering</strong>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Decompiles bytecode into
+                                readable formats specifically extracting obfuscated logic and hidden API keys within
+                                native libraries.</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                            <strong style="display: block; color: var(--text-primary); margin-bottom: 0.25rem;">4.
+                                Storage Probing</strong>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Analyzes local data stores
+                                including SQLite databases, SharedPreferences, and internal storage environments for
+                                data leakage.</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                            <strong style="display: block; color: var(--text-primary); margin-bottom: 0.25rem;">5.
+                                Network Analysis</strong>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Captures and inspects
+                                simulated traffic intercepting plaintext HTTP transmission and assessing SSL/TLS
+                                certificate pinning configurations.</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                            <strong style="display: block; color: var(--text-primary); margin-bottom: 0.25rem;">6. API
+                                Exploitation Setup</strong>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Identifies background API
+                                endpoints and probes for authorization flaws, injection vectors, and rate-limiting
+                                issues (OWASP API Top 10).</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                            <strong style="display: block; color: var(--text-primary); margin-bottom: 0.25rem;">7.
+                                Dynamic Testing</strong>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Executes runtime analysis to
+                                observe how the application handles intents, memory access, and environment hooks
+                                dynamically.</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                            <strong style="display: block; color: var(--text-primary); margin-bottom: 0.25rem;">8. RAG
+                                Vulnerability Mapping</strong>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Validates identified
+                                vulnerabilities against an internal Retrieval-Augmented Generation Knowledge Base
+                                constructed from known CVEs.</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                            <strong style="display: block; color: var(--text-primary); margin-bottom: 0.25rem;">9. Risk
+                                Assessment</strong>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Correlates all data to assign
+                                precise severity scores using CVSS metrics considering application-specific
+                                context.</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                            <strong style="display: block; color: var(--text-primary); margin-bottom: 0.25rem;">10.
+                                Report Generation</strong>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Outputs structured,
+                                machine-readable JSON artifacts alongside this rich HTML dashboard to orchestrate
+                                remediation paths.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Standards & Engineering Stack -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2.5rem;">
+
+                    <div
+                        style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-color, #e5e7eb); border-radius: 12px; padding: 2rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" style="color: var(--primary-color);">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
+                            <h3 style="color: var(--text-primary, #111827); font-size: 1.25rem; margin: 0;">Compliance &
+                                Integrity Governance</h3>
+                        </div>
+                        <p style="color: var(--text-secondary, #4b5563); line-height: 1.6; margin-bottom: 1rem;">
+                            Every vulnerability flagged by the agent maps strictly to universally accepted industry
+                            standards, ensuring reports are auditable and accurate:
+                        </p>
+                        <ul
+                            style="color: var(--text-secondary, #4b5563); line-height: 1.8; list-style-type: none; padding-left: 0;">
+                            <li><strong style="color: var(--text-primary);">OWASP Mobile Top 10:</strong> Core guideline
+                                protecting against improper platform usage, insecure storage, and broken cryptography.
+                            </li>
+                            <li><strong style="color: var(--text-primary);">OWASP API Top 10:</strong> Assures that
+                                backend communication isn't susceptible to BOLA or mass assignment attacks.</li>
+                            <li><strong style="color: var(--text-primary);">MSTG:</strong> The authoritative Mobile
+                                Security Testing Guide baseline framework.</li>
+                            <li><strong style="color: var(--text-primary);">CWE Alignments:</strong> Precise Common
+                                Weakness Enumeration identifiers applied to system flaws.</li>
+                        </ul>
+                    </div>
+
+                    <div
+                        style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-color, #e5e7eb); border-radius: 12px; padding: 2rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" style="color: var(--primary-color);">
+                                <polyline points="16 18 22 12 16 6" />
+                                <polyline points="8 6 2 12 8 18" />
+                            </svg>
+                            <h3 style="color: var(--text-primary, #111827); font-size: 1.25rem; margin: 0;">Engineering
+                                Stack & Technology</h3>
+                        </div>
+                        <p style="color: var(--text-secondary, #4b5563); line-height: 1.6; margin-bottom: 1rem;">
+                            The full-stack platform boasts an efficient modern web infrastructure tightly coupled with a
+                            high-performance Python analytics engine.
+                        </p>
+                        <ul
+                            style="color: var(--text-secondary, #4b5563); line-height: 1.8; list-style-type: none; padding-left: 0;">
+                            <li><strong style="color: var(--text-primary);">Backend:</strong> Modern Python powered by
+                                FastAPI, ensuring asynchronous endpoints and extremely fast request handling.</li>
+                            <li><strong style="color: var(--text-primary);">LLM Engine:</strong> Specialized Generative
+                                AI integrations via RAG components mapping code behavior to security risks contextually.
+                            </li>
+                            <li><strong style="color: var(--text-primary);">Frontend:</strong> Vanilla Javascript,
+                                HTML5, and CSS3 eliminating payload bloat and providing beautifully animated DOM
+                                rendering.</li>
+                            <li><strong style="color: var(--text-primary);">Reporting Protocol:</strong> Modular
+                                generation engines yielding granular JSON arrays for dev-ops integration and distinct
+                                HTML files per scan session.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Section 3: Ethical Boundaries -->
+                <div
+                    style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; padding: 1.5rem; text-align: center;">
+                    <h4
+                        style="color: #b91c1c; margin-bottom: 0.5rem; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        Ethical Scope & Boundaries
+                    </h4>
+                    <p
+                        style="color: var(--text-secondary, #4b5563); font-size: 0.95rem; margin: 0; max-width: 900px; margin-left: auto; margin-right: auto;">
+                        This Ai Power Mobile Security Agent explicitly restricts its execution environment to
+                        applications where mutual consent and authorization have been established. It implements
+                        defensive sandboxing to ensure no unauthenticated exploitation leaks into production network
+                        perimeters.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <!-- Feature Card 1: Code Analysis -->
+            <div class="feature-card">
+                <div class="feature-visual">
+                    <img src="/static/images/hero-back.png" alt="Security Analysis" class="feature-hero-img">
+                    <div class="code-preview">
+                        <div class="code-header">
+                            <span class="code-dot red"></span>
+                            <span class="code-dot yellow"></span>
+                            <span class="code-dot green"></span>
+                            <span class="code-label">PREVIEW</span>
+                        </div>
+                        <pre class="code-content"><code><span class="code-line-num">1</span>  <span class="code-keyword">import</span> { <span class="code-var">MSA</span> } <span class="code-keyword">from</span> <span class="code-string">'@msa/agent'</span>;
+<span class="code-line-num">2</span>
+<span class="code-line-num">3</span>  <span class="code-keyword">const</span> <span class="code-var">agent</span> = <span class="code-keyword">new</span> <span class="code-func">MSA</span>({
+<span class="code-line-num">4</span>    <span class="code-prop">analysisDepth</span>: <span class="code-string">"deep"</span>,
+<span class="code-line-num">5</span>    <span class="code-prop">enableOWASP</span>: <span class="code-bool">true</span>,
+<span class="code-line-num">6</span>  });
+<span class="code-line-num">7</span>
+<span class="code-line-num">8</span>  <span class="code-var">agent</span>.<span class="code-func">scan</span>(<span class="code-string">'target.apk'</span>)
+<span class="code-line-num">9</span>    .<span class="code-func">then</span>(<span class="code-var">report</span> => {
+<span class="code-line-num">10</span>     <span class="code-var">console</span>.<span class="code-func">log</span>(<span class="code-var">report</span>.<span class="code-prop">vulns</span>);
+<span class="code-line-num">11</span>   });</code></pre>
+                    </div>
+                </div>
+                <div class="feature-info">
+                    <div class="feature-tag">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                            <path d="M14 2v6h6" />
+                            <path d="M16 13H8" />
+                            <path d="M16 17H8" />
+                            <path d="M10 9H8" />
+                        </svg>
+                        <span>Static Analysis</span>
+                    </div>
+                    <h3 class="feature-title">Deep Code Inspection</h3>
+                    <p class="feature-desc">Automated decompilation, manifest parsing, and vulnerability detection with
+                        OWASP Mobile Top 10 compliance.</p>
+                    <a href="#scan" class="feature-link">Start Scan →</a>
+                </div>
+            </div>
+
+            <!-- Integrations Visual -->
+            <div class="integrations-card">
+                <div class="integrations-visual">
+                    <div class="integration-orbit">
+                        <div class="orbit-center">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
+                        </div>
+                        <div class="orbit-item orbit-1" title="OWASP">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                        </div>
+                        <div class="orbit-item orbit-2" title="APIs">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+                                <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+                            </svg>
+                        </div>
+                        <div class="orbit-item orbit-3" title="CWE">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+                            </svg>
+                        </div>
+                        <div class="orbit-item orbit-4" title="MSTG">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                                <line x1="12" y1="18" x2="12.01" y2="18" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-info">
+                    <div class="feature-tag tag-loop">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="23 4 23 10 17 10" />
+                            <polyline points="1 20 1 14 7 14" />
+                            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+                        </svg>
+                        <span>Automated Pipeline</span>
+                    </div>
+                    <h3 class="feature-title">Automated Workflows</h3>
+                    <p class="feature-desc">Trigger analysis across OWASP, MSTG, CWE databases and more to fully close
+                        the security loop.</p>
+                    <a href="#how-it-works" class="feature-link">View Docs →</a>
+                </div>
+            </div>
+
+            <!-- Knowledge Base Card -->
+            <div class="feature-card feature-card-alt">
+                <div class="feature-visual knowledge-visual">
+                    <div class="knowledge-grid">
+                        <div class="knowledge-node node-1">
+                            <div class="node-dot"></div>
+                            <div class="node-line line-h"></div>
+                            <div class="node-line line-v"></div>
+                        </div>
+                        <div class="knowledge-node node-2">
+                            <div class="node-dot"></div>
+                        </div>
+                        <div class="knowledge-node node-3">
+                            <div class="node-dot"></div>
+                            <div class="node-line line-h"></div>
+                        </div>
+                        <div class="knowledge-node node-4">
+                            <div class="node-dot dot-accent"></div>
+                            <span class="node-label">RAG</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="feature-info">
+                    <div class="feature-tag tag-data">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+                        </svg>
+                        <span>Up To Date</span>
+                    </div>
+                    <h3 class="feature-title">Knowledge-grounded Answers</h3>
+                    <p class="feature-desc">Rooted in OWASP standards, MSTG guidelines, and CWE databases — always up to
+                        date.</p>
+                    <a href="#" class="feature-link">View Docs →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-section" id="how-it-works">
+            <div class="section-header">
+                <span class="section-badge">HOW IT WORKS</span>
+                <h2 class="section-title">Three steps to<br><span class="title-accent">complete security.</span></h2>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card" data-step="01">
+                    <div class="step-number">01</div>
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                    </div>
+                    <h3>Upload Your APK</h3>
+                    <p>Simply drag and drop your Android or iOS application file. We accept .APK, .IPA, and .XAPK
+                        formats.</p>
+                </div>
+                <div class="step-card" data-step="02">
+                    <div class="step-number">02</div>
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="M21 21l-4.35-4.35" />
+                            <path d="M11 8v6" />
+                            <path d="M8 11h6" />
+                        </svg>
+                    </div>
+                    <h3>AI Analyzes</h3>
+                    <p>Our agent performs 10-phase autonomous analysis: static, dynamic, reverse engineering, network,
+                        API security, and more.</p>
+                </div>
+                <div class="step-card" data-step="03">
+                    <div class="step-number">03</div>
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                            <path d="M14 2v6h6" />
+                            <path d="M9 15l2 2 4-4" />
+                        </svg>
+                    </div>
+                    <h3>Get Your Report</h3>
+                    <p>Receive a detailed vulnerability report with risk scores, OWASP mappings, and actionable
+                        remediation steps.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Banner -->
+        <section class="cta-banner">
+            <div class="cta-content">
+                <span class="cta-slash">//</span>
+                <a href="#scan" class="btn btn-primary btn-lg" id="cta-scan-btn">START SCANNING</a>
+                <span class="cta-slash">//</span>
+            </div>
+        </section>
+
+        <!-- Scan Section (Upload) -->
+        <section class="scan-section" id="scan">
+            <div class="section-header">
+                <span class="section-badge">SCAN</span>
+                <h2 class="section-title">Upload your<br><span class="title-accent">target application.</span></h2>
+            </div>
+            <div class="upload-card" id="upload-area">
+                <div class="drop-zone" id="drop-zone">
+                    <input type="file" id="file-input" accept=".apk,.ipa,.xapk" hidden>
+                    <div class="drop-content">
+                        <div class="drop-icon-wrapper">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                        </div>
+                        <p class="drop-text">Drag & drop your <strong>.APK</strong> or <strong>.IPA</strong> file here
+                        </p>
+                        <span class="drop-divider">or</span>
+                        <button class="btn btn-primary" id="browse-btn">Browse Files</button>
+                    </div>
+                </div>
+                <p class="upload-meta">Accepts: APK · IPA · XAPK &nbsp;|&nbsp; Max: 500MB</p>
+            </div>
+        </section>
+
+        <!-- Scanning Section (hidden by default) -->
+        <section class="scanning-section hidden" id="scan-progress-section">
+            <div class="scanning-card">
+                <div class="scanning-header">
+                    <div class="scanning-icon-anim">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="M21 21l-4.35-4.35" />
+                        </svg>
+                    </div>
+                    <h2>Analyzing Target...</h2>
+                    <p class="scanning-filename" id="scan-filename"></p>
+                    <p class="scanning-step" id="scan-current-step"
+                        style="font-size:0.8rem;color:var(--accent);margin-top:0.25rem;font-weight:600;"></p>
+                </div>
+                <div class="progress-wrapper">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <span class="progress-pct" id="progress-text">0%</span>
+                </div>
+                <div class="scan-layout"
+                    style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem;">
+                    <div class="analysis-steps" id="analysis-steps">
+                        <div class="astep" data-step="1"><span class="astep-dot"></span><span>Reconnaissance</span>
+                        </div>
+                        <div class="astep" data-step="2"><span class="astep-dot"></span><span>Static Dissection</span>
+                        </div>
+                        <div class="astep" data-step="3"><span class="astep-dot"></span><span>Reverse Engineering</span>
+                        </div>
+                        <div class="astep" data-step="4"><span class="astep-dot"></span><span>Storage Probing</span>
+                        </div>
+                        <div class="astep" data-step="5"><span class="astep-dot"></span><span>Network Analysis</span>
+                        </div>
+                        <div class="astep" data-step="6"><span class="astep-dot"></span><span>API Exploitation</span>
+                        </div>
+                        <div class="astep" data-step="7"><span class="astep-dot"></span><span>Dynamic Testing</span>
+                        </div>
+                        <div class="astep" data-step="8"><span class="astep-dot"></span><span>Vulnerability
+                                Mapping</span></div>
+                        <div class="astep" data-step="9"><span class="astep-dot"></span><span>Risk Assessment</span>
+                        </div>
+                        <div class="astep" data-step="10"><span class="astep-dot"></span><span>Report Generation</span>
+                        </div>
+                    </div>
+                    <!-- Live Terminal Output -->
+                    <div class="live-terminal" id="live-terminal">
+                        <div class="terminal-header">
+                            <span class="terminal-dot" style="background:#ef4444"></span>
+                            <span class="terminal-dot" style="background:#f59e0b"></span>
+                            <span class="terminal-dot" style="background:#22c55e"></span>
+                            <span class="terminal-title">LIVE ANALYSIS LOG</span>
+                        </div>
+                        <div class="terminal-body" id="terminal-output">
+                            <div class="terminal-line">[INIT] Preparing analysis environment...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section (hidden by default) -->
+        <section class="results-section hidden" id="results-section">
+            <div class="section-header">
+                <span class="section-badge badge-danger">RESULTS</span>
+                <h2 class="section-title">Threat<br><span class="title-accent">Assessment.</span></h2>
+            </div>
+
+            <div class="risk-summary-card" id="risk-summary">
+                <div class="risk-grid" id="risk-cards"></div>
+                <div class="overall-risk-bar" id="overall-risk"></div>
+            </div>
+
+            <div class="findings-card" id="findings-card">
+                <div class="findings-header">
+                    <h3>Vulnerability Report</h3>
+                    <div class="filter-pills">
+                        <button class="filter-pill active" data-filter="all">All</button>
+                        <button class="filter-pill" data-filter="critical">Critical</button>
+                        <button class="filter-pill" data-filter="high">High</button>
+                        <button class="filter-pill" data-filter="medium">Medium</button>
+                        <button class="filter-pill" data-filter="low">Low</button>
+                    </div>
+                </div>
+                <div class="findings-list" id="findings-list"></div>
+            </div>
+
+            <div class="app-info-card" id="app-info">
+                <h3>Application Intelligence</h3>
+                <div class="info-columns" id="info-grid"></div>
+            </div>
+
+            <div class="report-downloads" id="reports-card">
+                <h3>Download Reports</h3>
+                <div class="report-btns" id="report-buttons"></div>
+            </div>
+
+            <div class="results-actions">
+                <button class="btn btn-primary btn-lg" id="new-scan-btn">New Scan</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="main-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo-symbol">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+                        <path d="M14 2L2 8v12l12 6 12-6V8L14 2z" stroke="currentColor" stroke-width="1.5" fill="none" />
+                        <path d="M14 8l-6 3v6l6 3 6-3v-6l-6-3z" fill="currentColor" opacity="0.3" />
+                        <circle cx="14" cy="14" r="3" fill="currentColor" />
+                    </svg>
+                </div>
+                <span>MSA — Mobile Security Agent v1.0</span>
+            </div>
+            <div class="footer-standards">
+                OWASP MOBILE TOP 10 &nbsp;·&nbsp; OWASP API TOP 10 &nbsp;·&nbsp; MSTG &nbsp;·&nbsp; CWE &nbsp;·&nbsp;
+                CAPEC
+            </div>
+            <p class="footer-copy">© 2026 Mobile Security Agent. Autonomous Penetration Testing.</p>
+        </div>
+    </footer>
+
+    <script src="/static/app.js?v=2.0"></script>
+</body>
+
+</html>
