@@ -1,0 +1,31 @@
+{
+  "_comment": "Curated labeled APK set for recall/precision measurement. Add real APKs with their expected CWE IDs here. 'expected_cwes' is the ground-truth set a correct scan must recover; 'max_alerts' (clean apps) caps allowed high/medium findings for precision.",
+  "targets": [
+    {
+      "id": "mock_vulnerable",
+      "source": "generated",
+      "platform": "android",
+      "expected_cwes": [
+        "CWE-798", "CWE-215", "CWE-530", "CWE-926", "CWE-321", "CWE-312",
+        "CWE-326", "CWE-693", "CWE-319", "CWE-22", "CWE-78", "CWE-470",
+        "CWE-494", "CWE-327", "CWE-927", "CWE-506"
+      ],
+      "note": "Synthetic app with known planted vulnerabilities (mirrors evaluate_precision.py)."
+    },
+    {
+      "id": "mock_clean",
+      "source": "generated",
+      "platform": "android",
+      "expected_cwes": [],
+      "max_alerts": 0,
+      "note": "Synthetic benign app; any high/medium alert is a false positive."
+    },
+    {
+      "id": "droidbench_arrayaccess1",
+      "source": "test.apk",
+      "platform": "android",
+      "expected_cwes": ["CWE-200"],
+      "note": "DroidBench de.ecspride.ArrayAccess1 — leaks device IMEI via SMS (source getDeviceId -> sink sendTextMessage)."
+    }
+  ]
+}

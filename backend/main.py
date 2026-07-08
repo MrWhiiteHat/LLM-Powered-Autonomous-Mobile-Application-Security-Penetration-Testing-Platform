@@ -218,6 +218,7 @@ def run_full_analysis(scan_id: str, file_path: Path, filename: str, platform: st
     try:
         all_findings = []
         app_name = file_path.stem
+        decompiled_dir = None
 
         # STEP 1: Application Reconnaissance
         scans[scan_id]["current_step"] = "Reconnaissance"
@@ -226,10 +227,27 @@ def run_full_analysis(scan_id: str, file_path: Path, filename: str, platform: st
         add_scan_log(scan_id, f"SHA-256: {scans[scan_id]['hashes'].get('sha256', 'N/A')[:32]}...")
         scans[scan_id]["progress"] = 10
 
+        # STEP 1.5: Decompilation (jadx -> androguard -> raw strings)
+        decompile_engine = "none"
+        if platform == "android":
+            try:
+                from utils.decompile import decompile_apk
+                scans[scan_id]["current_step"] = "Decompilation"
+                add_scan_log(scan_id, "PHASE 1.5: APK Decompilation")
+                decompiled_dir, decompile_engine = decompile_apk(file_path, platform)
+                if decompiled_dir:
+                    java_count = len(list(decompiled_dir.rglob("*.java")))
+                    add_scan_log(scan_id, f"  Decompiled via {decompile_engine}: {java_count} Java source files")
+                else:
+                    add_scan_log(scan_id, "  No decompiler available — using raw strings")
+            except Exception as e:
+                add_scan_log(scan_id, f"  Decompilation error: {e}")
+        scans[scan_id]["progress"] = 15
+
         # STEP 2: Static Analysis
         scans[scan_id]["current_step"] = "Static Analysis"
         add_scan_log(scan_id, "PHASE 2: Static Code Analysis")
-        static = StaticAnalyzer(file_path)
+        static = StaticAnalyzer(file_path, decompiled_dir=decompiled_dir)
         static_results = static.analyze()
         findings_count = len(static_results.get("findings", []))
         all_findings.extend(static_results.get("findings", []))
@@ -238,6 +256,28 @@ def run_full_analysis(scan_id: str, file_path: Path, filename: str, platform: st
         add_scan_log(scan_id, f"  Secrets: {len(static_results.get('secrets', []))}")
         add_scan_log(scan_id, f"  API Endpoints: {len(static_results.get('api_endpoints', []))}")
         scans[scan_id]["progress"] = 25
+
+        # STEP 2.5: AST Taint Flow Analysis (if decompiled sources available)
+        ast_results = {"findings": [], "ast_stats": {}}
+        if decompiled_dir:
+            try:
+                from modules.ast_analyzer import ASTAnalyzer
+                scans[scan_id]["current_step"] = "AST Taint Analysis"
+                add_scan_log(scan_id, "PHASE 2.5: AST Taint Flow Analysis")
+                ast = ASTAnalyzer(decompiled_dir)
+                ast_results = ast.analyze()
+                ast_findings = ast_results.get("findings", [])
+                ast_stats = ast_results.get("ast_stats", {})
+                all_findings.extend(ast_findings)
+                add_scan_log(scan_id, f"  Files parsed: {ast_stats.get('files_parsed', 0)}")
+                add_scan_log(scan_id, f"  Taint flows found: {ast_stats.get('taint_flows', 0)}")
+                add_scan_log(scan_id, f"  Dead methods skipped: {ast_stats.get('dead_methods_skipped', 0)}")
+                add_scan_log(scan_id, f"  AST findings: {len(ast_findings)}")
+            except ImportError:
+                add_scan_log(scan_id, "  AST analyzer not available (install javalang)")
+            except Exception as e:
+                add_scan_log(scan_id, f"  AST analysis error: {e}")
+        scans[scan_id]["progress"] = 30
 
         # STEP 3: Reverse Engineering
         scans[scan_id]["current_step"] = "Reverse Engineering"
@@ -277,10 +317,12 @@ def run_full_analysis(scan_id: str, file_path: Path, filename: str, platform: st
         add_scan_log(scan_id, f"  API issues: {len(api_results.get('findings', []))}")
         scans[scan_id]["progress"] = 70
 
-        # STEP 7: Dynamic Analysis
+        # STEP 7: Dynamic Analysis (Frida + static heuristics)
         scans[scan_id]["current_step"] = "Dynamic Analysis"
         add_scan_log(scan_id, "PHASE 7: Dynamic Runtime Analysis")
-        dynamic = DynamicAnalyzer(file_path)
+        # Extract package name from manifest if available
+        pkg_name = static_results.get("manifest", {}).get("package", file_path.stem)
+        dynamic = DynamicAnalyzer(file_path, package_name=pkg_name)
         dynamic_results = dynamic.analyze()
         all_findings.extend(dynamic_results.get("findings", []))
         add_scan_log(scan_id, f"  Runtime indicators: {len(dynamic_results.get('findings', []))}")
@@ -291,23 +333,24 @@ def run_full_analysis(scan_id: str, file_path: Path, filename: str, platform: st
         add_scan_log(scan_id, "PHASE 8: OWASP/CWE/CAPEC Vulnerability Mapping")
         mapper = VulnerabilityMapper()
         mapped = mapper.map_findings(all_findings)
-        enriched = [rag.enrich_finding(f) for f in mapped]
 
-        # Deduplicate
+        # Deduplicate before calling RAG enrichment (19x speedup by avoiding duplicate LLM completions)
         seen_titles = set()
-        unique = []
-        for f in enriched:
-            if f["title"] not in seen_titles:
+        unique_mapped = []
+        for f in mapped:
+            if f.get("title") not in seen_titles:
                 seen_titles.add(f["title"])
-                unique.append(f)
-        add_scan_log(scan_id, f"  Unique vulnerabilities: {len(unique)}")
+                unique_mapped.append(f)
+
+        enriched = [rag.enrich_finding(f) for f in unique_mapped]
+        add_scan_log(scan_id, f"  Unique vulnerabilities: {len(enriched)}")
         scans[scan_id]["progress"] = 85
 
         # STEP 9: Risk Assessment
         scans[scan_id]["current_step"] = "Risk Assessment"
         add_scan_log(scan_id, "PHASE 9: CVSS Risk Assessment")
         assessor = RiskAssessor()
-        risk_results = assessor.assess(unique)
+        risk_results = assessor.assess(enriched)
         add_scan_log(scan_id, f"  Overall risk: {risk_results.get('overall_risk', 'unknown').upper()}")
         add_scan_log(scan_id, f"  Total findings: {risk_results.get('total_findings', 0)}")
         scans[scan_id]["progress"] = 90
@@ -340,6 +383,8 @@ def run_full_analysis(scan_id: str, file_path: Path, filename: str, platform: st
             "network_analysis": network_results.get("network_config", {}),
             "api_analysis": api_results.get("api_analysis", []),
             "dynamic_analysis": dynamic_results.get("runtime_indicators", []),
+            "ast_analysis": ast_results.get("ast_stats", {}),
+            "decompiled": decompiled_dir is not None,
             "risk_assessment": risk_results,
         }
 
