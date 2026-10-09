@@ -64,7 +64,8 @@ Thumbs.db
 *.tar.gz
 *.rar
 thesis_latex/
-Mobile_Secuity_Agent_*
+Mobile_Security_Agent_*
+README_BENCHMARK*
 Turnitin_*
 .qa_cgu_*
 PROJECT_PRESENTATION_MASTER_GUIDE.md
