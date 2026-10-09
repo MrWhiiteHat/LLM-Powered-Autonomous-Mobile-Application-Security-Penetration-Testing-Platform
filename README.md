@@ -27,8 +27,7 @@
 - [Frontend Web Application & Dashboard](#-frontend-web-application--dashboard)
 - [Quickstart & Installation](#-quickstart--installation)
   - [Prerequisites](#prerequisites)
-  - [1-Click Windows Launchers](#1-click-windows-launchers)
-  - [Manual CLI Setup](#manual-cli-setup)
+  - [CLI Setup & Running](#cli-setup--running)
 - [Project Structure](#-project-structure)
 - [License & Disclaimer](#-license--disclaimer)
 
@@ -265,16 +264,7 @@ The platform includes a dedicated, responsive cybersecurity web application serv
 
 ---
 
-### 1-Click Windows Launchers
-
-The project includes pre-configured batch scripts located in the root directory:
-
-1. **Start Ollama Engine:** Double-click [`run_ollama.bat`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/run_ollama.bat)
-2. **Launch Backend Server:** Double-click [`run_server.bat`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/run_server.bat) (Starts server on `http://127.0.0.1:8000`)
-
----
-
-### Manual CLI Setup
+### CLI Setup & Running
 
 1. **Clone the Repository:**
    ```bash
@@ -342,8 +332,6 @@ The project includes pre-configured batch scripts located in the root directory:
 │   └── styles.css                  # Cyberpunk dark security theme
 ├── docs/                           # 74-section system architecture specifications
 ├── figures/                        # High-resolution diagrams & workflow charts
-├── run_server.bat                  # One-click FastAPI server launcher
-├── run_ollama.bat                  # One-click Ollama service launcher
 ├── LICENSE                         # GNU General Public License v3.0 (GPL-3.0)
 └── README.md                       # Master platform documentation
 ```

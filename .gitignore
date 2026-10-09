@@ -101,4 +101,7 @@ python.py.txt
 check_status.py
 verify_scans.py
 batch_scan.py
-]
+
+# Shell & Batch Scripts (Local Only)
+*.bat
+*.cmd
