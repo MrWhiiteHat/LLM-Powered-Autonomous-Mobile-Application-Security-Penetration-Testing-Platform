@@ -25,12 +25,10 @@
 - [AST Taint Analysis & Source-to-Sink Tracking](#-ast-taint-analysis--source-to-sink-tracking)
 - [Hardware Acceleration, Memory & Threading Profile](#-hardware-acceleration-memory--threading-profile)
 - [Frontend Web Application & Dashboard](#-frontend-web-application--dashboard)
-- [REST API Schemas & JSON Payloads](#-rest-api-schemas--json-payloads)
 - [Quickstart & Installation](#-quickstart--installation)
   - [Prerequisites](#prerequisites)
   - [1-Click Windows Launchers](#1-click-windows-launchers)
   - [Manual CLI Setup](#manual-cli-setup)
-- [Global Access via Cloudflare Tunnel](#-global-access-via-cloudflare-tunnel)
 - [Project Structure](#-project-structure)
 - [License & Disclaimer](#-license--disclaimer)
 
@@ -96,7 +94,7 @@ flowchart TD
 | **Memory Footprint** | ~350 MB idle / ~1.2 GB peak during full multi-DEX decompilation and AST parsing |
 | **LLM Inference Engine** | Local Ollama instance running `qwen2.5-coder:1.5b` (FP16 / 4-bit GGUF quantization) |
 | **LLM Execution Mode** | 100% Host-confined, CPU/GPU accelerated, zero internet data transmission |
-| **Network Interface** | Local loopback `http://127.0.0.1:8000` + Cloudflare HTTP/2 TLS tunnel over port 443 |
+| **Network Interface** | Local loopback `http://127.0.0.1:8000` (bind `0.0.0.0:8000`) |
 
 ---
 
@@ -254,94 +252,6 @@ The platform includes a dedicated, responsive cybersecurity web application serv
 
 ---
 
-## 📡 REST API Schemas & JSON Payloads
-
-The platform exposes an asynchronous REST API. Below are concrete request and response examples:
-
-### 1. Initiate Security Scan (`POST /api/scan`)
-Upload an APK or IPA file as multipart form data:
-```bash
-curl -X POST "http://localhost:8000/api/scan" \
-  -H "accept: application/json" \
-  -F "file=@target_application.apk"
-```
-**Response (HTTP 200 OK):**
-```json
-{
-  "scan_id": "scan_20261009_220518_a8f9",
-  "status": "queued",
-  "message": "APK uploaded successfully. 10-phase scan pipeline started.",
-  "app_name": "target_application.apk",
-  "sha256": "3a5f8b9e1c2d4e6f...8a7b6c5d4e3f2a1b"
-}
-```
-
-### 2. Poll Scan Progress & Logs (`GET /api/scan/{id}/status`)
-```bash
-curl -X GET "http://localhost:8000/api/scan/scan_20261009_220518_a8f9/status"
-```
-**Response (HTTP 200 OK):**
-```json
-{
-  "scan_id": "scan_20261009_220518_a8f9",
-  "status": "running",
-  "current_phase": "Phase 2: Static Code & Zero-Day AST Analysis",
-  "progress_percentage": 25,
-  "elapsed_seconds": 12.4,
-  "logs": [
-    "[22:05:19] Reconnaissance completed: Target SDK 34, 14 permissions found.",
-    "[22:05:22] Decompiled 3 classes.dex files into 428 Java source trees.",
-    "[22:05:25] AST Taint Tracker analyzing sources in com.example.app.MainActivity..."
-  ]
-}
-```
-
-### 3. Retrieve Vulnerability Findings (`GET /api/scan/{id}/findings`)
-```bash
-curl -X GET "http://localhost:8000/api/scan/scan_20261009_220518_a8f9/findings"
-```
-**Response (HTTP 200 OK):**
-```json
-{
-  "scan_id": "scan_20261009_220518_a8f9",
-  "total_findings": 1,
-  "findings": [
-    {
-      "id": "VULN-001",
-      "title": "Insecure File Permissions: World-Readable File Creation",
-      "severity": "HIGH",
-      "cvss_score": 7.5,
-      "cvss_vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
-      "owasp_category": "M2: Insecure Data Storage",
-      "cwe_id": "CWE-276",
-      "file_path": "com/example/app/data/SessionManager.java",
-      "line_number": 42,
-      "description": "Application creates files using Context.MODE_WORLD_READABLE, exposing sensitive tokens to any installed app.",
-      "remediation_patch": "--- SessionManager.java (Vulnerable)\n+++ SessionManager.java (Patched)\n- openFileOutput(\"auth.xml\", Context.MODE_WORLD_READABLE);\n+ EncryptedFile.Builder(context, \"auth.xml\", masterKey, FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();"
-    }
-  ]
-}
-```
-
-### 4. System Health Check (`GET /api/health`)
-```bash
-curl -X GET "http://localhost:8000/api/health"
-```
-**Response (HTTP 200 OK):**
-```json
-{
-  "status": "healthy",
-  "version": "2.0.0",
-  "total_scans": 111,
-  "active_scans": 0,
-  "llm_provider": "ollama",
-  "llm_model": "qwen2.5-coder:1.5b",
-  "timestamp": "2026-10-09T22:55:00.123456"
-}
-```
-
----
-
 ## 🚀 Quickstart & Installation
 
 ### Prerequisites
@@ -361,7 +271,6 @@ The project includes pre-configured batch scripts located in the root directory:
 
 1. **Start Ollama Engine:** Double-click [`run_ollama.bat`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/run_ollama.bat)
 2. **Launch Backend Server:** Double-click [`run_server.bat`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/run_server.bat) (Starts server on `http://127.0.0.1:8000`)
-3. **Launch Global Public HTTPS Access:** Double-click [`run_public_tunnel.bat`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/run_public_tunnel.bat)
 
 ---
 
@@ -393,22 +302,6 @@ The project includes pre-configured batch scripts located in the root directory:
    python -m uvicorn main:app --host 0.0.0.0 --port 8000
    ```
    Open your browser and navigate to **`http://localhost:8000`**.
-
----
-
-## 🌐 Global Access via Cloudflare Tunnel
-
-To share or test the dashboard over the internet from mobile phones, laptops, or remote examiners without port forwarding or dynamic DNS:
-
-```bash
-run_public_tunnel.bat
-```
-
-Or manually using the Cloudflare CLI:
-```bash
-cloudflared tunnel --protocol http2 --url http://127.0.0.1:8000
-```
-This generates a secure, global `https://*.trycloudflare.com` URL routing traffic through Cloudflare's Edge Network directly to your local instance.
 
 ---
 
@@ -450,7 +343,6 @@ This generates a secure, global `https://*.trycloudflare.com` URL routing traffi
 ├── docs/                           # 74-section system architecture specifications
 ├── figures/                        # High-resolution diagrams & workflow charts
 ├── run_server.bat                  # One-click FastAPI server launcher
-├── run_public_tunnel.bat           # One-click Cloudflare HTTPS tunnel launcher
 ├── run_ollama.bat                  # One-click Ollama service launcher
 ├── LICENSE                         # GNU General Public License v3.0 (GPL-3.0)
 └── README.md                       # Master platform documentation
