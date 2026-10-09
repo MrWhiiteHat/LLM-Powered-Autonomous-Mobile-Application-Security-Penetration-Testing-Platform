@@ -60,7 +60,7 @@ graph TD
 * **Mechanism**: Interacts with the backend entirely via asynchronous Fetch APIs. It features a modern dark-theme dashboard, live real-time analysis logs, vulnerability breakdowns, interactive risk charts, and downloadable reports.
 
 ### 2. The API & Orchestration Engine (Backend)
-* **Stack**: Python 3.14+ and FastAPI.
+* **Stack**: Python 3.10+ and FastAPI.
 * **Core Role**: Manages file uploads, runs asynchronous penetration testing workers, orchestrates the 10-phase security pipeline, and generates reports.
 * **Concurrency**: Leverages FastAPI's background tasks (`BackgroundTasks`) and thread-pooling (`asyncio.to_thread`) to run intensive, CPU-bound binary analysis routines concurrently without blocking the API thread.
 
@@ -173,42 +173,36 @@ The platform integrates a localized **RAG (Retrieval-Augmented Generation)** kno
 
 ---
 
-## 🛠️ Infrastructure VPS Deployment Architecture
+## 🛠️ Production Deployment Architecture
 
-For deployment onto production environments, the platform includes a customized `deploy.py` script. This script automates the secure deployment of the decoupled app onto raw Ubuntu VPS infrastructure:
+For deployment in production and cloud environments, the platform supports both lightweight Docker containerization and native Linux systemd service daemonization:
 
 ```
                   +------------------------------------------+
-                  |            Ubuntu VPS Server             |
+                  |         Host / Cloud VPS Server          |
                   |                                          |
                   |   +----------------------------------+   |
                   |   |    UFW Firewall (Port 8000)      |   |
                   |   +----------------+-----------------+   |
                   |                    |                     |
                   |   +----------------v-----------------+   |
-                  |   |     FastAPI Daemon Service       |   |
-                  |   |        (systemd service)         |   |
+                  |   |      Container / systemd         |   |
                   |   |   Runs: backend/main.py (uvicorn)|   |
                   |   +----------------+-----------------+   |
                   |                    |                     |
                   |   +----------------v-----------------+   |
-                  |   |  Directory: /opt/mobile-agent    |   |
-                  |   |   - uploads/                     |   |
-                  |   |   - reports/                     |   |
-                  |   |   - venv/ (isolated packages)    |   |
+                  |   |  Persistent Storage Volumes:     |   |
+                  |   |   - uploads/ (scanned binaries)  |   |
+                  |   |   - reports/ (audit artifacts)   |   |
+                  |   |   - logs/    (pipeline telemetry)|   |
                   |   +----------------------------------+   |
                   +--------------------+---------------------+
-                                       ^
-                                       | SSH (Paramiko)
-                                       |
-                       +---------------+---------------+
-                       |      Administrator Local      |
-                       |       (python deploy.py)      |
-                       +-------------------------------+
 ```
 
-### Automated Steps Performed by `deploy.py`:
-1. **Secure Transport**: Establishes an SSH channel using `Paramiko` to transfer the backend and frontend code to the remote server.
-2. **Environment Setup**: Installs system-level Python packages, creates an isolated virtual environment, and installs production dependencies.
-3. **Daemonization**: Registers the application as a background service via `systemd` (e.g., `/etc/systemd/system/mobile-security-agent.service`). This ensures that the server starts automatically on boot and restarts on crash.
-4. **Firewall Configurations**: Configures `ufw` to secure the system, opening only the necessary port (`8000`) for API and web access.
+### Supported Deployment Modes:
+1. **Containerized Deployment (Docker & Docker Compose)**:
+   - A multi-stage `Dockerfile` and `docker-compose.yml` encapsulate the Python 3.11 environment, decompression utilities, and FastAPI runtime.
+   - Run `docker compose up -d` to launch the platform with persistent upload and report volumes.
+2. **Native Linux Service (systemd)**:
+   - Registers a systemd unit (`mobile-security-agent.service`) executing `uvicorn main:app --host 0.0.0.0 --port 8000`.
+   - Ensures automatic restart on failure and daemon initialization across system boots.

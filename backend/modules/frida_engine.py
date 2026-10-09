@@ -164,7 +164,8 @@ class FridaInstrumenter:
             return path_adb
         
         import os
-        user_profile = os.environ.get("USERPROFILE", "C:\\Users\\MrWhiteHat")
+        from pathlib import Path
+        user_profile = os.environ.get("USERPROFILE") or str(Path.home())
         common_path = os.path.join(user_profile, "AppData", "Local", "Android", "Sdk", "platform-tools", "adb.exe")
         if os.path.exists(common_path):
             return common_path

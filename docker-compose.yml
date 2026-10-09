@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  msa-platform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: msa-v2-platform
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - MSA_HOST=0.0.0.0
+      - MSA_PORT=8000
+      - MSA_DEBUG=false
+      - LLM_PROVIDER=ollama
+      - LLM_MODEL=qwen2.5-coder:1.5b
+      - LLM_API_URL=http://host.docker.internal:11434
+    volumes:
+      - ./uploads:/app/uploads
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

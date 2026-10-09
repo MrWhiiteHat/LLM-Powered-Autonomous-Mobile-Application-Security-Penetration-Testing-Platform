@@ -1,0 +1,45 @@
+name: CI & Code Quality
+
+on:
+  push:
+    branches: [ "main", "develop", "chore/**", "feature/**" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  smoke-and-syntax:
+    name: Syntax & Import Validation (Python ${{ matrix.python-version }} on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.11"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+          cache-dependency-path: "backend/requirements.txt"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Bytecode syntax compilation check
+        run: |
+          python -m compileall backend
+
+      - name: Verify backend module imports
+        run: |
+          python -c "import sys; sys.path.insert(0, 'backend'); import main; print('FastAPI main module imported successfully')"
+
+      - name: Verify RAG Knowledge Base integrity
+        run: |
+          python -c "import sys; sys.path.insert(0, 'backend'); from knowledge.rag_engine import RAGEngine; r = RAGEngine(); print(f'Knowledge Engine initialized with {len(r.documents)} documents')"

@@ -28,6 +28,7 @@
 - [Quickstart & Installation](#-quickstart--installation)
   - [Prerequisites](#prerequisites)
   - [CLI Setup & Running](#cli-setup--running)
+  - [Docker Deployment](#docker-deployment-alternative)
 - [Project Structure](#-project-structure)
 - [License & Disclaimer](#-license--disclaimer)
 
@@ -242,12 +243,12 @@ The platform includes a dedicated, responsive cybersecurity web application serv
 
 | Frontend Page | Path | Primary Features & Data Displayed |
 | :--- | :--- | :--- |
-| **Analytics Dashboard** | [`index.html`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/frontend/index.html) | Real-time vulnerability severity distribution (Doughnut Chart), total audit count, active scan monitor, live telemetry ticker, and searchable historical scans table. |
-| **Scan Console** | [`scan.html`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/frontend/scan.html) | Drag-and-drop APK / IPA upload interface, animated 10-phase pipeline progress indicator, live terminal log streaming via polling, and instant report download buttons. |
-| **Documentation Portal** | [`docs.html`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/frontend/docs.html) | Interactive 10-phase pipeline architecture documentation, technical taxonomy cross-references, and full REST API specification. |
-| **Features & Matrix** | [`features.html`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/frontend/features.html) | In-depth security module breakdown covering OWASP Mobile Top 10 (2024), OWASP API Security Top 10 (2023), and AST taint analysis specifications. |
-| **How It Works** | [`how-it-works.html`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/frontend/how-it-works.html) | Visual step-by-step walkthrough explaining APK decompression, smali disassembly, static AST parsing, Frida dynamic runtime hooks, and RAG vector enrichment. |
-| **Platform Specs** | [`about.html`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/frontend/about.html) | System architecture overview, technical parameters, taxonomy alignment, and runtime hardware specs. |
+| **Analytics Dashboard** | [`frontend/index.html`](frontend/index.html) | Real-time vulnerability severity distribution (Doughnut Chart), total audit count, active scan monitor, live telemetry ticker, and searchable historical scans table. |
+| **Scan Console** | [`frontend/scan.html`](frontend/scan.html) | Drag-and-drop APK / IPA upload interface, animated 10-phase pipeline progress indicator, live terminal log streaming via polling, and instant report download buttons. |
+| **Documentation Portal** | [`frontend/docs.html`](frontend/docs.html) | Interactive 10-phase pipeline architecture documentation, technical taxonomy cross-references, and full REST API specification. |
+| **Features & Matrix** | [`frontend/features.html`](frontend/features.html) | In-depth security module breakdown covering OWASP Mobile Top 10 (2024), OWASP API Security Top 10 (2023), and AST taint analysis specifications. |
+| **How It Works** | [`frontend/how-it-works.html`](frontend/how-it-works.html) | Visual step-by-step walkthrough explaining APK decompression, smali disassembly, static AST parsing, Frida dynamic runtime hooks, and RAG vector enrichment. |
+| **Platform Specs** | [`frontend/about.html`](frontend/about.html) | System architecture overview, technical parameters, taxonomy alignment, and runtime hardware specs. |
 
 ---
 
@@ -295,6 +296,16 @@ The platform includes a dedicated, responsive cybersecurity web application serv
 
 ---
 
+### Docker Deployment (Alternative)
+
+Run the entire platform in an isolated container with one command:
+```bash
+docker compose up -d --build
+```
+The web dashboard is instantly accessible at **`http://localhost:8000`**.
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -332,6 +343,12 @@ The platform includes a dedicated, responsive cybersecurity web application serv
 │   └── styles.css                  # Cyberpunk dark security theme
 ├── docs/                           # 74-section system architecture specifications
 ├── figures/                        # High-resolution diagrams & workflow charts
+├── .env.example                    # Template environment configuration
+├── Dockerfile                      # Production container definition
+├── docker-compose.yml              # 1-command container orchestrator
+├── requirements.txt                # Root Python dependencies pointer
+├── CONTRIBUTING.md                 # Contribution guidelines & coding standards
+├── SECURITY.md                     # Vulnerability reporting & ethical policies
 ├── LICENSE                         # GNU General Public License v3.0 (GPL-3.0)
 └── README.md                       # Master platform documentation
 ```

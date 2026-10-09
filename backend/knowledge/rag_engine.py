@@ -962,32 +962,32 @@ class RAGEngine:
                         for event, elem in context:
                             if event == "end":
                                 tag = elem.tag.split('}')[-1] if '}' in elem.tag else elem.tag
-                            if tag == "Weakness":
-                                cwe_id = elem.get("ID")
-                                cwe_name = elem.get("Name")
-                                if cwe_id and cwe_name:
-                                    desc_elem = elem.find(".//{http://cwe.mitre.org/cwe-7}Description")
-                                    desc = desc_elem.text if desc_elem is not None else ""
-                                    
-                                    # Extract mitigations
-                                    mitigations = []
-                                    mit_group = elem.find(".//{http://cwe.mitre.org/cwe-7}Mitigations")
-                                    if mit_group is not None:
-                                        for mit in mit_group.findall(".//{http://cwe.mitre.org/cwe-7}Mitigation"):
-                                            desc_nodes = mit.findall(".//{http://cwe.mitre.org/cwe-7}Description")
-                                            desc_texts = ["".join(dn.itertext()).strip() for dn in desc_nodes]
-                                            desc_texts = [dt for dt in desc_texts if dt]
-                                            if desc_texts:
-                                                mitigations.append(" ".join(desc_texts))
-                                                
-                                    self.kb["cwe_catalog"][f"CWE-{cwe_id}"] = {
-                                        "name": cwe_name,
-                                        "description": desc,
-                                        "mitigations": "\n".join(mitigations) if mitigations else "Follow secure programming practices to prevent this weakness."
-                                    }
-                                    count += 1
-                                elem.clear()
-                                root.clear()
+                                if tag == "Weakness":
+                                    cwe_id = elem.get("ID")
+                                    cwe_name = elem.get("Name")
+                                    if cwe_id and cwe_name:
+                                        desc_elem = elem.find(".//{http://cwe.mitre.org/cwe-7}Description")
+                                        desc = desc_elem.text if desc_elem is not None else ""
+                                        
+                                        # Extract mitigations
+                                        mitigations = []
+                                        mit_group = elem.find(".//{http://cwe.mitre.org/cwe-7}Mitigations")
+                                        if mit_group is not None:
+                                            for mit in mit_group.findall(".//{http://cwe.mitre.org/cwe-7}Mitigation"):
+                                                desc_nodes = mit.findall(".//{http://cwe.mitre.org/cwe-7}Description")
+                                                desc_texts = ["".join(dn.itertext()).strip() for dn in desc_nodes]
+                                                desc_texts = [dt for dt in desc_texts if dt]
+                                                if desc_texts:
+                                                    mitigations.append(" ".join(desc_texts))
+                                                    
+                                        self.kb["cwe_catalog"][f"CWE-{cwe_id}"] = {
+                                            "name": cwe_name,
+                                            "description": desc,
+                                            "mitigations": "\n".join(mitigations) if mitigations else "Follow secure programming practices to prevent this weakness."
+                                        }
+                                        count += 1
+                                    elem.clear()
+                                    root.clear()
                 logger.info(f"Loaded {count} CWE catalog entries from XML dataset")
             except Exception as e:
                 logger.error(f"Error loading CWE XML catalog: {e}")
