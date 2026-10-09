@@ -1,6 +1,6 @@
 # 🛡️ LLM-Powered Autonomous Mobile Application Security Penetration Testing Platform (MSA v2.0)
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: Apache-2.0 / MIT](https://img.shields.io/badge/License-Apache_2.0_%7C_MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109%2B-009688.svg)](https://fastapi.tiangolo.com/)
 [![Ollama](https://img.shields.io/badge/Ollama-Local%20LLM-black.svg)](https://ollama.com/)
@@ -349,7 +349,9 @@ The web dashboard is instantly accessible at **`http://localhost:8000`**.
 ├── requirements.txt                # Root Python dependencies pointer
 ├── CONTRIBUTING.md                 # Contribution guidelines & coding standards
 ├── SECURITY.md                     # Vulnerability reporting & ethical policies
-├── LICENSE                         # GNU General Public License v3.0 (GPL-3.0)
+├── LICENSE                         # Master Dual License terms (Apache-2.0 OR MIT)
+├── LICENSE-APACHE                  # Apache License 2.0 full legal text
+├── LICENSE-MIT                     # MIT License full legal text
 └── README.md                       # Master platform documentation
 ```
 
@@ -358,7 +360,12 @@ The web dashboard is instantly accessible at **`http://localhost:8000`**.
 ## 📜 License & Disclaimer
 
 ### License
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. See the [`LICENSE`](LICENSE) file for complete terms. Under this license, you are free to run, inspect, modify, and redistribute this platform, provided that any derivative works are also released under the GNU GPL v3.0.
+This project is dual-licensed under either the **[Apache License 2.0](LICENSE-APACHE)** or the **[MIT License](LICENSE-MIT)**, at your option:
+
+- **Apache License 2.0:** Grants express patent licenses, protects contributors and organizations, and provides clear terms for enterprise and defensive tool integrations.
+- **MIT License:** Provides maximum permissive flexibility and effortless adoption across open-source utilities and academic research.
+
+See the [`LICENSE`](LICENSE), [`LICENSE-APACHE`](LICENSE-APACHE), and [`LICENSE-MIT`](LICENSE-MIT) files for complete legal terms.
 
 ### Ethical & Legal Disclaimer
 > [!IMPORTANT]

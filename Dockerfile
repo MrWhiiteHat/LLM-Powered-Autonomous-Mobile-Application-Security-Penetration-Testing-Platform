@@ -26,7 +26,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy application source code
 COPY backend/ /app/backend/
 COPY frontend/ /app/frontend/
-COPY LICENSE /app/
+COPY LICENSE* /app/
 COPY README.md /app/
 
 # Create runtime artifact directories
