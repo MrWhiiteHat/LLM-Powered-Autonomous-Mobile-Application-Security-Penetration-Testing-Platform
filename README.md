@@ -21,13 +21,16 @@
 - [The 10-Phase Security Pipeline](#-the-10-phase-security-pipeline)
 - [Vulnerability Detection Matrix & Rules](#-vulnerability-detection-matrix--rules)
 - [RAG Engine & Knowledge Base Data](#-rag-engine--knowledge-base-data)
+- [Frida Dynamic Hooking & Runtime Instrumentation](#-frida-dynamic-hooking--runtime-instrumentation)
+- [AST Taint Analysis & Source-to-Sink Tracking](#-ast-taint-analysis--source-to-sink-tracking)
+- [Hardware Acceleration, Memory & Threading Profile](#-hardware-acceleration-memory--threading-profile)
 - [Frontend Web Application & Dashboard](#-frontend-web-application--dashboard)
+- [REST API Schemas & JSON Payloads](#-rest-api-schemas--json-payloads)
 - [Quickstart & Installation](#-quickstart--installation)
   - [Prerequisites](#prerequisites)
   - [1-Click Windows Launchers](#1-click-windows-launchers)
   - [Manual CLI Setup](#manual-cli-setup)
 - [Global Access via Cloudflare Tunnel](#-global-access-via-cloudflare-tunnel)
-- [REST API Reference](#-rest-api-reference)
 - [Project Structure](#-project-structure)
 - [License & Disclaimer](#-license--disclaimer)
 
@@ -166,6 +169,76 @@ The RAG subsystem (`backend/knowledge/rag_engine.py`) operates as a self-contain
 
 ---
 
+## 🔬 Frida Dynamic Hooking & Runtime Instrumentation
+
+The dynamic module (`backend/modules/frida_engine.py`) automates runtime analysis by injecting JavaScript hooks into target mobile applications via ADB:
+
+```
+                      ┌──► Universal SSL Pinning Bypass (OkHttp3 / TrustManager)
+                      ├──► Root & Emulator Detection Evasion (RootBeer / test-keys)
+[Frida Core Engine] ──┼──► Cryptographic Key Interception (Cipher.init / SecretKeySpec)
+                      ├──► SQLite Unencrypted Query Interceptor
+                      └──► IPC Intent Injection & Broadcast Fuzzing
+```
+
+### Automated Hooking Capabilities
+
+1. **Universal SSL Pinning Bypass:** Intercepts `javax.net.ssl.TrustManagerImpl.verifyChain()`, `okhttp3.CertificatePinner.check()`, and Android 7.0+ `NetworkSecurityConfig` to audit encrypted network traffic.
+2. **Root & Anti-Tampering Evasion:** Hooks common root-checking APIs (`java.io.File.exists` for `/system/bin/su`, `/system/xbin/which`, `android.os.Build.TAGS` for `test-keys`) to evaluate if client defenses can be circumvented.
+3. **Cryptographic Key Logging:** Intercepts `javax.crypto.Cipher.init()` calls at runtime to capture the actual runtime encryption algorithm, mode, padding, and secret key bytes (`SecretKeySpec.getEncoded()`).
+4. **Lifecycle Automation:** Automatically discovers connected ADB devices/emulators, installs the test APK, spawns the process in suspended mode, injects the instrumentation script, resumes execution, captures telemetry, and gracefully uninstalls.
+
+---
+
+## 🧬 AST Taint Analysis & Source-to-Sink Tracking
+
+The static analysis pipeline employs Abstract Syntax Tree traversal (`backend/modules/ast_analyzer.py` and `backend/modules/xref_taint.py`) powered by `javalang` to trace data flow paths:
+
+```
+[Untrusted Source]                [Control Flow Graph]                [Vulnerable Sink]
+getIntent().getStringExtra() ──► [Variable Propagation] ──► SQLiteDatabase.rawQuery()
+                                           │
+                                           └──► Sanitized? ──► [SUPPRESS ALERT]
+```
+
+### Taint Sources & Sinks Tracked
+
+- **Taint Sources (Untrusted Inputs):**
+  - `android.content.Intent.getStringExtra()`
+  - `android.net.Uri.getQueryParameter()`
+  - `android.content.SharedPreferences.getString()`
+  - `android.webkit.WebView.loadUrl()`
+- **Taint Sinks (Vulnerable Executions):**
+  - **SQL Injection:** `android.database.sqlite.SQLiteDatabase.rawQuery()`, `execSQL()`
+  - **Command Injection:** `java.lang.Runtime.getRuntime().exec()`, `ProcessBuilder.start()`
+  - **Path Traversal:** `java.io.File.<init>()`, `openFileOutput()` without path normalization
+  - **Reflection Abuse:** `java.lang.Class.forName()`, `Method.invoke()`
+- **Heuristic Shannon Entropy Calculation:** Automatically calculates byte entropy $H(X) = -\sum P(x) \log_2 P(x)$ to pinpoint high-entropy hardcoded cloud credentials (AWS Access Keys, Stripe Live/Test Keys, Google API Keys, Firebase URLs, and JWTs).
+
+---
+
+## ⚡ Hardware Acceleration, Memory & Threading Profile
+
+The backend orchestrator (`backend/main.py`) is optimized for low-latency asynchronous execution on standard commodity hardware:
+
+```
+[FastAPI Asynchronous Event Loop (Uvicorn ASGI)]
+       │
+       ├──► Worker Thread: APK Extraction & Multi-Tier Decompilation
+       ├──► Worker Thread: AST Code Traversal & Regex Pattern Scanning
+       ├──► Worker Thread: Local Frida Dynamic Instrumentation
+       └──► Asynchronous Subprocess: Local Ollama LLM Inference Engine
+```
+
+- **GPU Acceleration:** Automatically leverages NVIDIA CUDA / TensorRT when an NVIDIA GPU is present (tested on NVIDIA GeForce GTX 1050 Ti with 4GB VRAM).
+- **CPU Fallback:** Fully operational on CPU-only workstations via `LLM_FORCE_CPU=true` in `config.py` without code changes.
+- **Resource Constraints:**
+  - **Idle Memory:** ~350 MB RAM
+  - **Peak Analysis Memory:** ~1.2 GB RAM (during 10-phase multi-DEX extraction and AST traversal)
+  - **Max Concurrent Audits:** Configurable via `LLM_MAX_AUDITS_PER_SCAN` (default: 5 concurrent audits).
+
+---
+
 ## 🖥️ Frontend Web Application & Dashboard
 
 The platform includes a dedicated, responsive cybersecurity web application served directly by the FastAPI backend:
@@ -178,6 +251,94 @@ The platform includes a dedicated, responsive cybersecurity web application serv
 | **Features & Matrix** | [`features.html`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/frontend/features.html) | In-depth security module breakdown covering OWASP Mobile Top 10 (2024), OWASP API Security Top 10 (2023), and AST taint analysis specifications. |
 | **How It Works** | [`how-it-works.html`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/frontend/how-it-works.html) | Visual step-by-step walkthrough explaining APK decompression, smali disassembly, static AST parsing, Frida dynamic runtime hooks, and RAG vector enrichment. |
 | **Platform Specs** | [`about.html`](file:///e:/Final%20Year%20Project%201st%20prototype/LLM-Powered-Autonomous-Mobile-Application-Security-Penetration-Testing-Platform/frontend/about.html) | System architecture overview, technical parameters, taxonomy alignment, and runtime hardware specs. |
+
+---
+
+## 📡 REST API Schemas & JSON Payloads
+
+The platform exposes an asynchronous REST API. Below are concrete request and response examples:
+
+### 1. Initiate Security Scan (`POST /api/scan`)
+Upload an APK or IPA file as multipart form data:
+```bash
+curl -X POST "http://localhost:8000/api/scan" \
+  -H "accept: application/json" \
+  -F "file=@target_application.apk"
+```
+**Response (HTTP 200 OK):**
+```json
+{
+  "scan_id": "scan_20261009_220518_a8f9",
+  "status": "queued",
+  "message": "APK uploaded successfully. 10-phase scan pipeline started.",
+  "app_name": "target_application.apk",
+  "sha256": "3a5f8b9e1c2d4e6f...8a7b6c5d4e3f2a1b"
+}
+```
+
+### 2. Poll Scan Progress & Logs (`GET /api/scan/{id}/status`)
+```bash
+curl -X GET "http://localhost:8000/api/scan/scan_20261009_220518_a8f9/status"
+```
+**Response (HTTP 200 OK):**
+```json
+{
+  "scan_id": "scan_20261009_220518_a8f9",
+  "status": "running",
+  "current_phase": "Phase 2: Static Code & Zero-Day AST Analysis",
+  "progress_percentage": 25,
+  "elapsed_seconds": 12.4,
+  "logs": [
+    "[22:05:19] Reconnaissance completed: Target SDK 34, 14 permissions found.",
+    "[22:05:22] Decompiled 3 classes.dex files into 428 Java source trees.",
+    "[22:05:25] AST Taint Tracker analyzing sources in com.example.app.MainActivity..."
+  ]
+}
+```
+
+### 3. Retrieve Vulnerability Findings (`GET /api/scan/{id}/findings`)
+```bash
+curl -X GET "http://localhost:8000/api/scan/scan_20261009_220518_a8f9/findings"
+```
+**Response (HTTP 200 OK):**
+```json
+{
+  "scan_id": "scan_20261009_220518_a8f9",
+  "total_findings": 1,
+  "findings": [
+    {
+      "id": "VULN-001",
+      "title": "Insecure File Permissions: World-Readable File Creation",
+      "severity": "HIGH",
+      "cvss_score": 7.5,
+      "cvss_vector": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+      "owasp_category": "M2: Insecure Data Storage",
+      "cwe_id": "CWE-276",
+      "file_path": "com/example/app/data/SessionManager.java",
+      "line_number": 42,
+      "description": "Application creates files using Context.MODE_WORLD_READABLE, exposing sensitive tokens to any installed app.",
+      "remediation_patch": "--- SessionManager.java (Vulnerable)\n+++ SessionManager.java (Patched)\n- openFileOutput(\"auth.xml\", Context.MODE_WORLD_READABLE);\n+ EncryptedFile.Builder(context, \"auth.xml\", masterKey, FileEncryptionScheme.AES256_GCM_HKDF_4KB).build();"
+    }
+  ]
+}
+```
+
+### 4. System Health Check (`GET /api/health`)
+```bash
+curl -X GET "http://localhost:8000/api/health"
+```
+**Response (HTTP 200 OK):**
+```json
+{
+  "status": "healthy",
+  "version": "2.0.0",
+  "total_scans": 111,
+  "active_scans": 0,
+  "llm_provider": "ollama",
+  "llm_model": "qwen2.5-coder:1.5b",
+  "timestamp": "2026-10-09T22:55:00.123456"
+}
+```
 
 ---
 
@@ -248,20 +409,6 @@ Or manually using the Cloudflare CLI:
 cloudflared tunnel --protocol http2 --url http://127.0.0.1:8000
 ```
 This generates a secure, global `https://*.trycloudflare.com` URL routing traffic through Cloudflare's Edge Network directly to your local instance.
-
----
-
-## 📡 REST API Reference
-
-| Method | Endpoint | Description |
-| :---: | :--- | :--- |
-| `POST` | `/api/scan` | Upload APK/IPA binary and trigger asynchronous 10-phase analysis. |
-| `GET` | `/api/scans` | Retrieve summary of all historical audits. |
-| `GET` | `/api/scan/{id}/status` | Poll real-time progress, current active phase, and live logs. |
-| `GET` | `/api/scan/{id}/findings` | Retrieve discovered vulnerabilities with CVSS scores and RAG enrichment. |
-| `GET` | `/api/scan/{id}/report/html` | Download or view the full interactive HTML security audit report. |
-| `GET` | `/api/knowledge/{topic}` | Query the hybrid RAG index for security references and guidelines. |
-| `GET` | `/api/health` | System health check, active scans, and LLM connection status. |
 
 ---
 
