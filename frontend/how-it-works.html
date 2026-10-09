@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="How It Works — Detailed walkthrough of the 10-phase autonomous mobile application security penetration testing pipeline.">
+    <title>How It Works: 10-Phase Pipeline - Mobile Security Agent v2.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css?v=9.0">
+</head>
+
+<body>
+    <!-- Main Header -->
+    <header id="main-header">
+        <nav class="nav-container">
+            <a href="index.html" class="nav-logo" id="nav-logo">
+                <div class="logo-symbol">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <path d="M14 2L2 8v12l12 6 12-6V8L14 2z" stroke="currentColor" stroke-width="1.5" fill="none" />
+                        <path d="M14 8l-6 3v6l6 3 6-3v-6l-6-3z" fill="currentColor" opacity="0.3" />
+                        <circle cx="14" cy="14" r="3" fill="currentColor" />
+                    </svg>
+                </div>
+                <span class="logo-text">Mobile Security Agent v2.0</span>
+            </a>
+            <div class="nav-center" id="nav-links">
+                <a href="about.html" class="nav-link">About</a>
+                <a href="features.html" class="nav-link">Features</a>
+                <a href="how-it-works.html" class="nav-link active">How it Works</a>
+                <a href="docs.html" class="nav-link">Docs</a>
+                <a href="scan.html" class="nav-link">Scan</a>
+            </div>
+            <div class="nav-right">
+                <div class="status-pill" id="server-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+                <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div class="mobile-menu hidden" id="mobile-menu">
+            <a href="about.html" class="mobile-link">About</a>
+            <a href="features.html" class="mobile-link">Features</a>
+            <a href="how-it-works.html" class="mobile-link">How it Works</a>
+            <a href="docs.html" class="mobile-link">Docs</a>
+            <a href="scan.html" class="mobile-link">Scan</a>
+        </div>
+    </header>
+
+    <main style="padding-top: 100px; padding-bottom: 5rem;">
+        <section class="how-page-section" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+            <!-- Hero Header -->
+            <div class="section-header" style="text-align: center; margin-bottom: 3.5rem;">
+                <span class="section-badge" style="background: var(--accent-light); color: var(--accent); font-size: 0.75rem; padding: 4px 14px; border-radius: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(232, 80, 47, 0.2);">AUTONOMOUS EXECUTION ARCHITECTURE</span>
+                <h1 class="section-title" style="font-size: 2.5rem; font-weight: 900; color: var(--text-primary); margin-top: 0.75rem; line-height: 1.2;">
+                    How It Works: <span class="title-accent" style="color: var(--accent);">The 10-Phase Pipeline</span>
+                </h1>
+                <p style="color: var(--text-secondary); max-width: 820px; margin: 1rem auto 0; font-size: 1.05rem; line-height: 1.7;">
+                    Each uploaded application flows through a strictly decoupled, 10-phase auditing sequence. Structured JSON contracts ensure resilience, while local LLM reasoning enriches and verifies every flagged vulnerability.
+                </p>
+            </div>
+
+            <!-- Workflow Visual Pipeline Overview -->
+            <div style="background: linear-gradient(135deg, rgba(14, 42, 71, 0.05), rgba(232, 80, 47, 0.05)); border: 1px solid var(--border-light); border-radius: 14px; padding: 1.75rem 2rem; margin-bottom: 3.5rem;">
+                <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin: 0 0 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>🔄</span> Sequential Pipeline Orchestration
+                </h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: center; font-size: 0.82rem; font-weight: 700;">
+                    <span style="background: var(--accent); color: #fff; padding: 6px 14px; border-radius: 20px;">1. Reconnaissance</span>
+                    <span style="color: var(--accent);">➔</span>
+                    <span style="background: #0E2A47; color: #fff; padding: 6px 14px; border-radius: 20px;">2. Static Dissection</span>
+                    <span style="color: var(--accent);">➔</span>
+                    <span style="background: #0E2A47; color: #fff; padding: 6px 14px; border-radius: 20px;">3. Reverse Engineering</span>
+                    <span style="color: var(--accent);">➔</span>
+                    <span style="background: #0E2A47; color: #fff; padding: 6px 14px; border-radius: 20px;">4. Storage Audit</span>
+                    <span style="color: var(--accent);">➔</span>
+                    <span style="background: #0E2A47; color: #fff; padding: 6px 14px; border-radius: 20px;">5. Network Trust</span>
+                    <span style="color: var(--accent);">➔</span>
+                    <span style="background: #0E2A47; color: #fff; padding: 6px 14px; border-radius: 20px;">6. API Security</span>
+                    <span style="color: var(--accent);">➔</span>
+                    <span style="background: #0E2A47; color: #fff; padding: 6px 14px; border-radius: 20px;">7. Dynamic DBI</span>
+                    <span style="color: var(--accent);">➔</span>
+                    <span style="background: #7c3aed; color: #fff; padding: 6px 14px; border-radius: 20px;">8. RAG Triaging</span>
+                    <span style="color: var(--accent);">➔</span>
+                    <span style="background: #2563eb; color: #fff; padding: 6px 14px; border-radius: 20px;">9. CVSS Risk</span>
+                    <span style="color: var(--accent);">➔</span>
+                    <span style="background: #10b981; color: #fff; padding: 6px 14px; border-radius: 20px;">10. Report Export</span>
+                </div>
+            </div>
+
+            <!-- Detailed 10 Phases List -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 4rem;">
+
+                <!-- Phase 1 -->
+                <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-left: 5px solid var(--accent); border-radius: 12px; padding: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px;">PHASE 1</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">Binary Reconnaissance &amp; Cryptographic Integrity</h3>
+                        </div>
+                        <span style="font-family: monospace; font-size: 0.78rem; background: rgba(232, 80, 47, 0.08); color: var(--accent); padding: 3px 10px; border-radius: 6px; font-weight: 600;">file_handler.py</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 0.75rem;">
+                        Validates binary format (APK/ZIP), computes multi-digest cryptographic hashes (SHA-256, SHA-1, MD5), audits APK signature scheme versions (v1 JAR signing, v2 APK signature scheme, v3 key rotation, and v4 streaming), parses min/target SDK versions, and assigns target size tiers.
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <span><strong>Inputs:</strong> Raw APK binary file</span>
+                        <span><strong>Outputs:</strong> Package metadata, certificate fingerprints, cryptographic hashes</span>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-left: 5px solid #0E2A47; border-radius: 12px; padding: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #0E2A47; text-transform: uppercase; letter-spacing: 0.5px;">PHASE 2</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">Static Dissection &amp; Manifest Attack Surface</h3>
+                        </div>
+                        <span style="font-family: monospace; font-size: 0.78rem; background: #e2e8f0; color: #0E2A47; padding: 3px 10px; border-radius: 6px; font-weight: 600;">static_analysis.py</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 0.75rem;">
+                        Invokes <code>aapt dump xmltree</code> to decompile binary AndroidManifest.xml. Audits 32 dangerous runtime permissions, inspects exported IPC components (Activities, Services, Broadcast Receivers, Content Providers) lacking signature protection, flags <code>android:debuggable="true"</code>, and checks ADB backup exposure (<code>android:allowBackup="true"</code>).
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <span><strong>Inputs:</strong> Manifest binary XML</span>
+                        <span><strong>Outputs:</strong> Permission risk matrix, exported IPC attack surface, build flag warnings</span>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-left: 5px solid #0E2A47; border-radius: 12px; padding: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #0E2A47; text-transform: uppercase; letter-spacing: 0.5px;">PHASE 3</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">Reverse Engineering &amp; AST Construction</h3>
+                        </div>
+                        <span style="font-family: monospace; font-size: 0.78rem; background: #e2e8f0; color: #0E2A47; padding: 3px 10px; border-radius: 6px; font-weight: 600;">reverse_engineering.py</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 0.75rem;">
+                        Decompiles DEX bytecode into Smali and Java source trees via APKTool 2.9+ and JADX 1.5+. Constructs Abstract Syntax Trees (AST) using <code>javalang</code>, traverses control-flow graphs, extracts REST/WebSocket API endpoints, and scans for high-entropy hardcoded AWS/Firebase/Stripe cloud tokens.
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <span><strong>Inputs:</strong> DEX bytecode and resources</span>
+                        <span><strong>Outputs:</strong> Decompiled source tree, AST objects, harvested URLs, hardcoded secrets</span>
+                    </div>
+                </div>
+
+                <!-- Phase 4 -->
+                <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-left: 5px solid #0E2A47; border-radius: 12px; padding: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #0E2A47; text-transform: uppercase; letter-spacing: 0.5px;">PHASE 4</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">Storage Security &amp; Data Leakage Analysis</h3>
+                        </div>
+                        <span style="font-family: monospace; font-size: 0.78rem; background: #e2e8f0; color: #0E2A47; padding: 3px 10px; border-radius: 6px; font-weight: 600;">storage_analysis.py</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 0.75rem;">
+                        Audits application sandboxed storage policies. Detects deprecated <code>MODE_WORLD_READABLE</code> and <code>MODE_WORLD_WRITEABLE</code> flags in SharedPreferences, flags unencrypted SQLite database creations, inspects SQL raw string concatenations for SQL injection, and checks for external storage misuse.
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <span><strong>Inputs:</strong> Decompiled Java source &amp; asset schemas</span>
+                        <span><strong>Outputs:</strong> Storage vulnerability records (CWE-312, CWE-922, CWE-89)</span>
+                    </div>
+                </div>
+
+                <!-- Phase 5 -->
+                <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-left: 5px solid #0E2A47; border-radius: 12px; padding: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #0E2A47; text-transform: uppercase; letter-spacing: 0.5px;">PHASE 5</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">Network Security &amp; Transport Layer Trust</h3>
+                        </div>
+                        <span style="font-family: monospace; font-size: 0.78rem; background: #e2e8f0; color: #0E2A47; padding: 3px 10px; border-radius: 6px; font-weight: 600;">network_analysis.py</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 0.75rem;">
+                        Evaluates <code>network_security_config.xml</code>, flags cleartext HTTP transmission allowances (<code>android:usesCleartextTraffic="true"</code>), audits empty custom <code>X509TrustManager</code> implementations that accept all CAs, detects <code>AllowAllHostnameVerifier</code>, and verifies SSL/TLS certificate pinning configurations.
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <span><strong>Inputs:</strong> Network XML configurations &amp; SSL trust code</span>
+                        <span><strong>Outputs:</strong> MITM vulnerability findings, TLS trust posture (CWE-295, CWE-319)</span>
+                    </div>
+                </div>
+
+                <!-- Phase 6 -->
+                <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-left: 5px solid #0E2A47; border-radius: 12px; padding: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #0E2A47; text-transform: uppercase; letter-spacing: 0.5px;">PHASE 6</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">API Security Testing (OWASP API Top 10)</h3>
+                        </div>
+                        <span style="font-family: monospace; font-size: 0.78rem; background: #e2e8f0; color: #0E2A47; padding: 3px 10px; border-radius: 6px; font-weight: 600;">api_testing.py</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 0.75rem;">
+                        Probes extracted REST/GraphQL endpoints for Broken Object Level Authorization (BOLA), unauthenticated administrative interfaces, Broken Function Level Authorization (BFLA), server-side request forgery (SSRF), and authorization token exposure in query parameters.
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <span><strong>Inputs:</strong> Discovered URL routes &amp; parameter schemas</span>
+                        <span><strong>Outputs:</strong> OWASP API Top 10 vulnerability classifications</span>
+                    </div>
+                </div>
+
+                <!-- Phase 7 -->
+                <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-left: 5px solid #0891b2; border-radius: 12px; padding: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #0891b2; text-transform: uppercase; letter-spacing: 0.5px;">PHASE 7</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">Dynamic Runtime Instrumentation</h3>
+                        </div>
+                        <span style="font-family: monospace; font-size: 0.78rem; background: rgba(8, 145, 178, 0.1); color: #0891b2; padding: 3px 10px; border-radius: 6px; font-weight: 600;">dynamic_analysis.py</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 0.75rem;">
+                        Injects Frida 16.x DBI scripts into the live Android process via ADB. Hooks <code>javax.crypto.Cipher</code> to extract symmetric encryption keys, intercepts Keystore aliases, captures SQLite runtime queries, and monitors cleartext sockets. Automatically uninstalls the target application upon completion.
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <span><strong>Inputs:</strong> Live application process on connected ADB emulator/device</span>
+                        <span><strong>Outputs:</strong> Runtime memory captures, hooked API calls, cryptographic trace logs</span>
+                    </div>
+                </div>
+
+                <!-- Phase 8 -->
+                <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-left: 5px solid #7c3aed; border-radius: 12px; padding: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.5px;">PHASE 8</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">RAG Vulnerability Mapping &amp; LLM Triage</h3>
+                        </div>
+                        <span style="font-family: monospace; font-size: 0.78rem; background: rgba(124, 58, 237, 0.1); color: #7c3aed; padding: 3px 10px; border-radius: 6px; font-weight: 600;">vulnerability_mapper.py</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 0.75rem;">
+                        Executes multi-stage fuzzy deduplication, normalizes raw scanner signals against 34 ontology graph taxonomy edges, queries the 2,075-document Hybrid RAG knowledge base via BM25 + TF-IDF with Reciprocal Rank Fusion (k=60), and prompts the local Ollama LLM to verify control-flow reachability and eliminate false positives.
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <span><strong>Inputs:</strong> Raw candidate findings from Phases 1–7</span>
+                        <span><strong>Outputs:</strong> Verified, RAG-grounded vulnerability findings with actionable code patches</span>
+                    </div>
+                </div>
+
+                <!-- Phase 9 -->
+                <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-left: 5px solid #2563eb; border-radius: 12px; padding: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px;">PHASE 9</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">Automated Risk Scoring (CVSS v3.1)</h3>
+                        </div>
+                        <span style="font-family: monospace; font-size: 0.78rem; background: rgba(37, 99, 235, 0.1); color: #2563eb; padding: 3px 10px; border-radius: 6px; font-weight: 600;">risk_assessment.py</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 0.75rem;">
+                        Calculates deterministic CVSS v3.1 vector equations across Base, Temporal, and Environmental metrics (AV, AC, PR, UI, S, C, I, A). Classifies findings into Critical, High, Medium, Low, and Informational severity tiers, enforcing deterministic noise suppression gates (&tau; = 0.80).
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <span><strong>Inputs:</strong> Enriched vulnerability objects</span>
+                        <span><strong>Outputs:</strong> CVSS scores, vector strings, severity tiers, noise suppression statistics</span>
+                    </div>
+                </div>
+
+                <!-- Phase 10 -->
+                <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-left: 5px solid #10b981; border-radius: 12px; padding: 1.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.5px;">PHASE 10</span>
+                            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">Multi-Format Report Generation &amp; Export</h3>
+                        </div>
+                        <span style="font-family: monospace; font-size: 0.78rem; background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 3px 10px; border-radius: 6px; font-weight: 600;">report_generator.py</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0 0 0.75rem;">
+                        Renders the complete audit through an interactive HTML5 Executive Dashboard using Jinja2 templates, while compiling machine-readable standard JSON reports containing granular code snippets, line numbers, CWE mappings, and drop-in Java/XML diffs.
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <span><strong>Inputs:</strong> Final scored findings, app metadata, scan timeline</span>
+                        <span><strong>Outputs:</strong> Downloadable HTML and standard JSON audit reports</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Navigation Actions -->
+            <div style="text-align: center; margin-top: 3rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="scan.html" class="btn btn-primary" style="padding: 0.8rem 2rem; font-weight: 700; text-decoration: none;">Start a New Scan</a>
+                <a href="features.html" class="btn btn-secondary" style="padding: 0.8rem 1.75rem; text-decoration: none;">Explore Features ➔</a>
+                <a href="about.html" class="btn btn-secondary" style="padding: 0.8rem 1.75rem; text-decoration: none;">About MSA v2.0 ➔</a>
+                <a href="docs.html" class="btn btn-secondary" style="padding: 0.8rem 1.75rem; text-decoration: none;">Technical Docs ➔</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="main-footer" style="margin-top: 5rem; border-top: 1px solid var(--border-light); padding: 2rem 0;">
+        <div class="footer-content" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+            <div class="footer-brand" style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary);">
+                <div class="logo-symbol">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+                        <path d="M14 2L2 8v12l12 6 12-6V8L14 2z" stroke="currentColor" stroke-width="1.5" fill="none" />
+                        <path d="M14 8l-6 3v6l6 3 6-3v-6l-6-3z" fill="currentColor" opacity="0.3" />
+                        <circle cx="14" cy="14" r="3" fill="currentColor" />
+                    </svg>
+                </div>
+                <span>Mobile Security Agent v2.0</span>
+            </div>
+            <div class="footer-standards" style="font-size: 0.75rem; color: var(--text-muted); text-align: center; letter-spacing: 0.5px;">
+                OWASP MOBILE TOP 10 (2024) &nbsp;·&nbsp; OWASP API TOP 10 (2023) &nbsp;·&nbsp; MASTG / MASVS v2.0 &nbsp;·&nbsp; CWE &nbsp;·&nbsp; CAPEC &nbsp;·&nbsp; NIST NVD
+            </div>
+            <p class="footer-copy" style="font-size: 0.72rem; color: var(--text-muted); margin: 0;">© 2026 Mobile Security Agent v2.0. Autonomous Penetration Testing Platform.</p>
+        </div>
+    </footer>
+
+    <script src="/static/app.js?v=9.0"></script>
+</body>
+</html>

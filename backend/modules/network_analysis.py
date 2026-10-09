@@ -7,6 +7,7 @@ import zipfile
 from pathlib import Path
 
 from utils.logger import get_logger
+from utils.analysis_helpers import proximity_search, is_benign_url
 
 logger = get_logger("NetworkAnalysis")
 
@@ -20,6 +21,60 @@ class NetworkAnalyzer:
         self.findings = []
         self.network_config = {}
 
+    def _extract_evidence_details(self, content: str, match_start: int, match_end: int, filename: str) -> dict:
+        """
+        Extract structured evidence details from a pattern match:
+        file path, line number, class name, method name, matched string, and a code snippet.
+        """
+        if not content:
+            return {}
+        try:
+            line_no = content[:match_start].count("\n") + 1
+            matched = content[match_start:match_end]
+            
+            # Snippet extraction
+            lines = content.split("\n")
+            line_idx = line_no - 1
+            start_idx = max(0, line_idx - 2)
+            end_idx = min(len(lines), line_idx + 3)
+            
+            snippet_lines = []
+            for idx in range(start_idx, end_idx):
+                prefix = "--> " if idx == line_idx else "    "
+                snippet_lines.append(f"{idx+1:4d} | {prefix}{lines[idx]}")
+            code_snippet = "\n".join(snippet_lines)
+            
+            # Class name extraction
+            content_before = content[:match_start]
+            class_matches = list(re.finditer(r"\bclass\s+(\w+)", content_before))
+            class_name = class_matches[-1].group(1) if class_matches else "N/A"
+            
+            # Method name extraction (supports Java/Kotlin/Swift)
+            method_matches = list(re.finditer(r"\b(?:public|protected|private|static|\s)+\s+[\w\<\>\[\]]+\s+(\w+)\s*\([^\)]*\)\s*(?:\{|throws)", content_before))
+            fun_matches = list(re.finditer(r"\bfun\s+(\w+)", content_before))
+            swift_matches = list(re.finditer(r"\bfunc\s+(\w+)", content_before))
+            
+            method_name = "N/A"
+            if swift_matches and (not fun_matches or swift_matches[-1].start() > fun_matches[-1].start()):
+                if not method_matches or swift_matches[-1].start() > method_matches[-1].start():
+                    method_name = swift_matches[-1].group(1)
+            elif fun_matches and (not method_matches or fun_matches[-1].start() > method_matches[-1].start()):
+                method_name = fun_matches[-1].group(1)
+            elif method_matches:
+                method_name = method_matches[-1].group(1)
+                
+            return {
+                "file_path": filename,
+                "line_number": line_no,
+                "class_name": class_name,
+                "method_name": method_name,
+                "matched_string": matched,
+                "code_snippet": code_snippet
+            }
+        except Exception as e:
+            logger.error(f"Error extracting evidence details: {e}")
+            return {}
+
     def analyze(self) -> dict:
         """Run network security analysis."""
         logger.info(f"Starting network analysis: {self.file_path.name}")
@@ -31,7 +86,6 @@ class NetworkAnalyzer:
         self._check_network_security_config()
         self._check_http_urls()
         self._check_websocket_security()
-        self._check_custom_trust_manager()
 
         return {
             "network_config": self.network_config,
@@ -63,7 +117,7 @@ class NetworkAnalyzer:
         # Android: Check for usesCleartextTraffic
         for item in strings:
             if "usesCleartextTraffic" in item["content"]:
-                if 'true' in item["content"].lower():
+                if re.search(r'(?i)android:usesCleartextTraffic\s*=\s*["\']true["\']', item["content"]):
                     self.findings.append({
                         "title": "Cleartext Traffic Allowed",
                         "severity": "high",
@@ -78,7 +132,7 @@ class NetworkAnalyzer:
 
         # iOS: Check ATS
         for item in strings:
-            if "NSAllowsArbitraryLoads" in item["content"]:
+            if re.search(r'NSAllowsArbitraryLoads.*?(?:true|<true\s*/?>)', item["content"], re.IGNORECASE | re.DOTALL):
                 self.findings.append({
                     "title": "iOS ATS Disabled",
                     "severity": "high",
@@ -96,23 +150,56 @@ class NetworkAnalyzer:
             "TLS 1.0": (r"(?i)TLSv1(?:\.0)?(?!\.\d)", "TLS 1.0 is deprecated"),
             "TLS 1.1": (r"(?i)TLSv1\.1", "TLS 1.1 is deprecated"),
             "Weak Cipher Suite": (
-                r"(?i)(RC4|DES|3DES|NULL|EXPORT|anon|MD5)",
+                r"\b(RC4|3DES|DESede|_EXPORT_|TLS_.*EXPORT|SSL_.*EXPORT|DH_anon)\b",
                 "Weak cipher suites are vulnerable to attacks",
             ),
         }
 
         for item in self._get_strings():
+            # Skip compiled binary resource files (images, binary drawables)
+            if item["file"].startswith("res/") and not item["file"].endswith((".xml", ".json", ".txt")):
+                continue
             for issue_name, (pattern, desc) in insecure_tls_patterns.items():
-                if re.search(pattern, item["content"]):
-                    self.findings.append({
+                matches = list(re.finditer(pattern, item["content"], re.IGNORECASE if issue_name != "Weak Cipher Suite" else 0))
+                if matches:
+                    m = matches[0]
+                    details = self._extract_evidence_details(item["content"], m.start(), m.end(), item["file"])
+                    finding = {
                         "title": f"Insecure TLS: {issue_name}",
                         "severity": "high",
                         "description": desc,
                         "category": "network",
                         "owasp": "M5",
                         "cwe": "CWE-326",
-                        "evidence": f"Found in {item['file']}",
-                    })
+                        "evidence": f"Found in {item['file']}: {m.group(0)[:60]}",
+                    }
+                    finding.update(details)
+                    self.findings.append(finding)
+            # Separate check for MD5 only when near cipher/SSL/TLS context
+            md5_cipher_matches = proximity_search(
+                item["content"],
+                r'\bMD5\b',
+                r'(?i)(cipher|ssl|tls|suite)',
+                max_line_distance=3,
+                file_name=item.get('file', '')
+            )
+            if md5_cipher_matches:
+                md5_hits = list(re.finditer(r'\bMD5\b', item["content"], re.IGNORECASE))
+                if not md5_hits:
+                    continue
+                m = md5_hits[0]
+                details = self._extract_evidence_details(item["content"], m.start(), m.end(), item["file"])
+                finding = {
+                    "title": "Insecure TLS: MD5 Cipher Usage",
+                    "severity": "high",
+                    "description": "MD5 is used in a cipher/SSL/TLS context, which is weak and vulnerable to collision attacks.",
+                    "category": "network",
+                    "owasp": "M5",
+                    "cwe": "CWE-326",
+                    "evidence": f"Found in {item['file']}",
+                }
+                finding.update(details)
+                self.findings.append(finding)
 
     def _check_certificate_pinning(self):
         """Check for certificate pinning implementation."""
@@ -138,7 +225,8 @@ class NetworkAnalyzer:
         if not found:
             self.findings.append({
                 "title": "No Certificate Pinning",
-                "severity": "high",
+                "severity": "info",
+                "confidence": "low",
                 "description": "Certificate pinning is not implemented. The application is vulnerable "
                                "to man-in-the-middle attacks using forged certificates.",
                 "category": "network",
@@ -171,16 +259,21 @@ class NetworkAnalyzer:
 
         for item in self._get_strings():
             for issue_name, (pattern, desc) in bypass_patterns.items():
-                if re.search(pattern, item["content"]):
-                    self.findings.append({
+                matches = list(re.finditer(pattern, item["content"]))
+                if matches:
+                    m = matches[0]
+                    details = self._extract_evidence_details(item["content"], m.start(), m.end(), item["file"])
+                    finding = {
                         "title": f"Certificate Validation Bypass: {issue_name}",
                         "severity": "critical",
                         "description": desc + ". This makes the application vulnerable to MITM attacks.",
                         "category": "network",
                         "owasp": "M5",
                         "cwe": "CWE-295",
-                        "evidence": f"Found in {item['file']}",
-                    })
+                        "evidence": f"Found in {item['file']}: {m.group(0)[:60]}",
+                    }
+                    finding.update(details)
+                    self.findings.append(finding)
 
     def _check_network_security_config(self):
         """Check Android Network Security Configuration."""
@@ -192,17 +285,18 @@ class NetworkAnalyzer:
                         content = zf.read(name).decode("utf-8", errors="ignore")
                         self.network_config["has_network_security_config"] = True
 
-                        # Check for cleartext permission
-                        if "cleartextTrafficPermitted" in content and "true" in content:
-                            self.findings.append({
-                                "title": "Cleartext Traffic in Network Security Config",
-                                "severity": "high",
-                                "description": "Network Security Config permits cleartext traffic.",
-                                "category": "network",
-                                "owasp": "M5",
-                                "cwe": "CWE-319",
-                                "evidence": f"cleartextTrafficPermitted=true in {name}",
-                            })
+                        # Check for cleartext permission using regex to verify explicit true value
+                        if "cleartextTrafficPermitted" in content:
+                            if re.search(r'cleartextTrafficPermitted\s*=\s*["\']true["\']', content, re.IGNORECASE):
+                                self.findings.append({
+                                    "title": "Cleartext Traffic in Network Security Config",
+                                    "severity": "high",
+                                    "description": "Network Security Config permits cleartext traffic.",
+                                    "category": "network",
+                                    "owasp": "M5",
+                                    "cwe": "CWE-319",
+                                    "evidence": f"cleartextTrafficPermitted=true in {name}",
+                                })
 
                         # Check for trust-anchors allowing user certs
                         if "user" in content and "trust-anchors" in content:
@@ -242,8 +336,7 @@ class NetworkAnalyzer:
             urls = re.findall(r'http://[^\s<>"\']+', item["content"])
             for url in urls:
                 # Skip common non-sensitive URLs
-                if any(d in url for d in ["schemas.android.com", "www.w3.org",
-                                           "localhost", "127.0.0.1", "10.0.", "192.168."]):
+                if is_benign_url(url):
                     continue
                 http_count += 1
                 if len(http_urls) < 10:
@@ -264,8 +357,11 @@ class NetworkAnalyzer:
     def _check_websocket_security(self):
         """Check WebSocket security."""
         for item in self._get_strings():
-            if re.search(r"ws://(?!localhost|127\.0\.0\.1)", item["content"]):
-                self.findings.append({
+            matches = list(re.finditer(r"ws://(?!localhost|127\.0\.0\.1)", item["content"]))
+            if matches:
+                m = matches[0]
+                details = self._extract_evidence_details(item["content"], m.start(), m.end(), item["file"])
+                finding = {
                     "title": "Insecure WebSocket (ws://)",
                     "severity": "medium",
                     "description": "Unencrypted WebSocket connection found. Use wss:// for secure WebSocket.",
@@ -273,19 +369,8 @@ class NetworkAnalyzer:
                     "owasp": "M5",
                     "cwe": "CWE-319",
                     "evidence": f"ws:// URL in {item['file']}",
-                })
+                }
+                finding.update(details)
+                self.findings.append(finding)
                 return
 
-    def _check_custom_trust_manager(self):
-        """Check for custom TrustManager that accepts all certs."""
-        patterns = [
-            r"(?i)class\s+\w+\s+implements\s+X509TrustManager",
-            r"(?i)checkServerTrusted.*\{\s*\}",
-            r"(?i)TrustManager\[\]\s*=\s*new\s*TrustManager",
-        ]
-
-        for item in self._get_strings():
-            for pattern in patterns:
-                if re.search(pattern, item["content"]):
-                    # Already captured by certificate validation check
-                    break

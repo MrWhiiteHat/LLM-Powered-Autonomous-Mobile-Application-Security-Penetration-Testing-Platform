@@ -7,6 +7,7 @@ import zipfile
 from pathlib import Path
 
 from utils.logger import get_logger
+from utils.analysis_helpers import proximity_search
 
 logger = get_logger("StorageAnalysis")
 
@@ -19,6 +20,60 @@ class StorageAnalyzer:
         self.platform = "android" if file_path.suffix.lower() in (".apk", ".xapk") else "ios"
         self.findings = []
         self.storage_issues = []
+
+    def _extract_evidence_details(self, content: str, match_start: int, match_end: int, filename: str) -> dict:
+        """
+        Extract structured evidence details from a pattern match:
+        file path, line number, class name, method name, matched string, and a code snippet.
+        """
+        if not content:
+            return {}
+        try:
+            line_no = content[:match_start].count("\n") + 1
+            matched = content[match_start:match_end]
+            
+            # Snippet extraction
+            lines = content.split("\n")
+            line_idx = line_no - 1
+            start_idx = max(0, line_idx - 2)
+            end_idx = min(len(lines), line_idx + 3)
+            
+            snippet_lines = []
+            for idx in range(start_idx, end_idx):
+                prefix = "--> " if idx == line_idx else "    "
+                snippet_lines.append(f"{idx+1:4d} | {prefix}{lines[idx]}")
+            code_snippet = "\n".join(snippet_lines)
+            
+            # Class name extraction
+            content_before = content[:match_start]
+            class_matches = list(re.finditer(r"\bclass\s+(\w+)", content_before))
+            class_name = class_matches[-1].group(1) if class_matches else "N/A"
+            
+            # Method name extraction (supports Java/Kotlin/Swift)
+            method_matches = list(re.finditer(r"\b(?:public|protected|private|static|\s)+\s+[\w\<\>\[\]]+\s+(\w+)\s*\([^\)]*\)\s*(?:\{|throws)", content_before))
+            fun_matches = list(re.finditer(r"\bfun\s+(\w+)", content_before))
+            swift_matches = list(re.finditer(r"\bfunc\s+(\w+)", content_before))
+            
+            method_name = "N/A"
+            if swift_matches and (not fun_matches or swift_matches[-1].start() > fun_matches[-1].start()):
+                if not method_matches or swift_matches[-1].start() > method_matches[-1].start():
+                    method_name = swift_matches[-1].group(1)
+            elif fun_matches and (not method_matches or fun_matches[-1].start() > method_matches[-1].start()):
+                method_name = fun_matches[-1].group(1)
+            elif method_matches:
+                method_name = method_matches[-1].group(1)
+                
+            return {
+                "file_path": filename,
+                "line_number": line_no,
+                "class_name": class_name,
+                "method_name": method_name,
+                "matched_string": matched,
+                "code_snippet": code_snippet
+            }
+        except Exception as e:
+            logger.error(f"Error extracting evidence details: {e}")
+            return {}
 
     def analyze(self) -> dict:
         """Run storage security analysis."""
@@ -65,21 +120,51 @@ class StorageAnalyzer:
 
     def _check_shared_preferences(self):
         """Check for sensitive data in SharedPreferences."""
-        patterns = {
-            "Password in SharedPreferences": r"(?i)(?:getSharedPreferences|edit\(\)).*(?:password|passwd|pwd)",
-            "Token in SharedPreferences": r"(?i)(?:getSharedPreferences|putString).*(?:token|session|auth)",
-            "Credentials in SharedPreferences": r"(?i)(?:SharedPreferences|edit\(\)).*(?:credential|username|login)",
+        # MODE_WORLD patterns are exact matches, check directly
+        mode_patterns = {
             "MODE_WORLD_READABLE": r"MODE_WORLD_READABLE",
             "MODE_WORLD_WRITEABLE": r"MODE_WORLD_WRITEABLE",
         }
 
         for item in self._get_strings():
-            for issue_name, pattern in patterns.items():
+            for issue_name, pattern in mode_patterns.items():
                 if re.search(pattern, item["content"]):
-                    severity = "critical" if "MODE_WORLD" in issue_name else "high"
                     self.findings.append({
                         "title": f"Insecure Storage: {issue_name}",
-                        "severity": severity,
+                        "severity": "critical",
+                        "description": f"{issue_name} detected in {item['file']}. "
+                                       "Sensitive data should not be stored in SharedPreferences without encryption.",
+                        "category": "storage",
+                        "owasp": "M9",
+                        "cwe": "CWE-312",
+                        "evidence": f"Pattern found in {item['file']}",
+                    })
+                    self.storage_issues.append(issue_name)
+
+        # Sensitive data patterns: use proximity_search to require both patterns within 3 lines
+        sensitive_checks = {
+            "Password in SharedPreferences": (
+                r"(?i)(?:getSharedPreferences|edit\(\))",
+                r"(?i)(?:password|passwd|pwd)",
+            ),
+            "Token in SharedPreferences": (
+                r"(?i)(?:getSharedPreferences|putString)",
+                r"(?i)(?:token|session|auth)",
+            ),
+            "Credentials in SharedPreferences": (
+                r"(?i)(?:SharedPreferences|edit\(\))",
+                r"(?i)(?:credential|username|login)",
+            ),
+        }
+
+        for item in self._get_strings():
+            for issue_name, (pattern_a, pattern_b) in sensitive_checks.items():
+                matches = proximity_search(item["content"], pattern_a, pattern_b,
+                                           max_line_distance=3, file_name=item.get('file', ''))
+                if matches:
+                    self.findings.append({
+                        "title": f"Insecure Storage: {issue_name}",
+                        "severity": "high",
                         "description": f"{issue_name} detected in {item['file']}. "
                                        "Sensitive data should not be stored in SharedPreferences without encryption.",
                         "category": "storage",
@@ -123,7 +208,10 @@ class StorageAnalyzer:
 
         for item in self._get_strings():
             for pattern in patterns:
-                if re.search(pattern, item["content"]):
+                matches = proximity_search(item["content"], pattern,
+                                           r"(?i)(?:password|passwd|pwd|secret|token|credential|sensitive|private|personal)",
+                                           max_line_distance=5, file_name=item.get('file', ''))
+                if matches:
                     self.findings.append({
                         "title": "Data Written to External Storage",
                         "severity": "medium",
@@ -156,7 +244,8 @@ class StorageAnalyzer:
         if not found:
             self.findings.append({
                 "title": "Android Keystore Not Used",
-                "severity": "medium",
+                "severity": "low",
+                "confidence": "low",
                 "description": "The application does not appear to use Android Keystore for "
                                "secure key storage. Cryptographic keys may be stored insecurely.",
                 "category": "storage",
@@ -168,7 +257,7 @@ class StorageAnalyzer:
     def _check_file_permissions(self):
         """Check for insecure file permissions."""
         patterns = {
-            "World Readable File": r"(?i)MODE_WORLD_READABLE|openFileOutput.*0",
+            "World Readable File": r"(?i)MODE_WORLD_READABLE|openFileOutput.*[12]",
             "World Writable File": r"(?i)MODE_WORLD_WRITEABLE",
         }
 
@@ -219,9 +308,16 @@ class StorageAnalyzer:
         }
 
         for item in self._get_strings():
+            # Skip raw binary files (DEX/SO) — cross-line regex matching on compiled bytecode
+            # generates false positive matches for standard framework storage methods
+            if item["file"].endswith((".dex", ".so")):
+                continue
             for issue_name, pattern in patterns.items():
-                if re.search(pattern, item["content"]):
-                    self.findings.append({
+                matches = list(re.finditer(pattern, item["content"]))
+                if matches:
+                    m = matches[0]
+                    details = self._extract_evidence_details(item["content"], m.start(), m.end(), item["file"])
+                    finding = {
                         "title": issue_name,
                         "severity": "high",
                         "description": f"{issue_name} detected. Sensitive data must be encrypted before storage.",
@@ -229,7 +325,9 @@ class StorageAnalyzer:
                         "owasp": "M9",
                         "cwe": "CWE-312",
                         "evidence": f"Pattern found in {item['file']}",
-                    })
+                    }
+                    finding.update(details)
+                    self.findings.append(finding)
 
     def _check_clipboard_usage(self):
         """Check for sensitive data copied to clipboard."""
@@ -245,7 +343,8 @@ class StorageAnalyzer:
                 if re.search(pattern, item["content"]):
                     self.findings.append({
                         "title": "Clipboard Usage Detected",
-                        "severity": "low",
+                        "severity": "info",
+                        "confidence": "low",
                         "description": "The application uses the clipboard. Sensitive data copied to "
                                        "clipboard can be accessed by other applications.",
                         "category": "storage",
@@ -269,7 +368,8 @@ class StorageAnalyzer:
                 if re.search(pattern, item["content"]):
                     self.findings.append({
                         "title": "Cache Storage Usage",
-                        "severity": "low",
+                        "severity": "info",
+                        "confidence": "low",
                         "description": "Application uses cache storage. Cached data may persist "
                                        "and be accessible to attackers with physical access.",
                         "category": "storage",
@@ -298,7 +398,8 @@ class StorageAnalyzer:
         if not found:
             self.findings.append({
                 "title": "iOS Keychain Not Used",
-                "severity": "medium",
+                "severity": "low",
+                "confidence": "low",
                 "description": "No Keychain usage detected. Sensitive data may be stored insecurely.",
                 "category": "storage",
                 "owasp": "M9",

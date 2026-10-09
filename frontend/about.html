@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="About Mobile Security Agent v2.0 — Autonomous AI-powered mobile application security penetration testing platform with RAG-grounded LLM reasoning.">
+    <title>About - Mobile Security Agent v2.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css?v=9.0">
+</head>
+
+<body>
+    <!-- Main Header -->
+    <header id="main-header">
+        <nav class="nav-container">
+            <a href="index.html" class="nav-logo" id="nav-logo">
+                <div class="logo-symbol">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <path d="M14 2L2 8v12l12 6 12-6V8L14 2z" stroke="currentColor" stroke-width="1.5" fill="none" />
+                        <path d="M14 8l-6 3v6l6 3 6-3v-6l-6-3z" fill="currentColor" opacity="0.3" />
+                        <circle cx="14" cy="14" r="3" fill="currentColor" />
+                    </svg>
+                </div>
+                <span class="logo-text">Mobile Security Agent v2.0</span>
+            </a>
+            <div class="nav-center" id="nav-links">
+                <a href="about.html" class="nav-link active">About</a>
+                <a href="features.html" class="nav-link">Features</a>
+                <a href="how-it-works.html" class="nav-link">How it Works</a>
+                <a href="docs.html" class="nav-link">Docs</a>
+                <a href="scan.html" class="nav-link">Scan</a>
+            </div>
+            <div class="nav-right">
+                <div class="status-pill" id="server-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+                <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div class="mobile-menu hidden" id="mobile-menu">
+            <a href="about.html" class="mobile-link">About</a>
+            <a href="features.html" class="mobile-link">Features</a>
+            <a href="how-it-works.html" class="mobile-link">How it Works</a>
+            <a href="docs.html" class="mobile-link">Docs</a>
+            <a href="scan.html" class="mobile-link">Scan</a>
+        </div>
+    </header>
+
+    <main style="padding-top: 100px; padding-bottom: 5rem;">
+        <section class="about-page-section" style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+            <!-- Hero Header -->
+            <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+                <span class="section-badge" style="background: var(--accent-light); color: var(--accent); font-size: 0.75rem; padding: 4px 14px; border-radius: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(232, 80, 47, 0.2);">AUTONOMOUS PENETRATION TESTING AGENT</span>
+                <h1 class="section-title" style="font-size: 2.5rem; font-weight: 900; color: var(--text-primary); margin-top: 0.75rem; line-height: 1.2;">
+                    About <span class="title-accent" style="color: var(--accent);">Mobile Security Agent v2.0</span>
+                </h1>
+                <p style="color: var(--text-secondary); max-width: 840px; margin: 1rem auto 0; font-size: 1.05rem; line-height: 1.7;">
+                    Mobile Security Agent (MSA v2.0) is a next-generation, autonomous security auditing platform engineered for in-depth static, dynamic, and RAG-grounded penetration testing of Android and iOS mobile applications.
+                </p>
+            </div>
+
+            <!-- Host-Confined Boundary Notice -->
+            <div style="background: linear-gradient(135deg, rgba(14, 42, 71, 0.04), rgba(232, 80, 47, 0.05)); border: 1px solid var(--border-light); border-left: 5px solid var(--accent); padding: 1.75rem; border-radius: 12px; margin-bottom: 2.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <h3 style="margin: 0; color: var(--text-primary); font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🔒</span> 100% Host-Confined Processing &amp; Data Sovereignty Guarantee
+                    </h3>
+                    <span style="font-size: 0.72rem; padding: 3px 10px; background: #ecfdf5; color: #059669; border-radius: 12px; font-weight: bold; border: 1px solid rgba(5, 150, 105, 0.2);">AIR-GAPPED READY</span>
+                </div>
+                <p style="margin: 0; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.7;">
+                    MSA v2.0 guarantees that <strong>100% of binary decompilation, AST extraction, RAG embeddings, and LLM inference execute strictly within the local host machine's RAM and localhost socket (127.0.0.1)</strong>. No decompiled bytecode, proprietary secrets, network endpoints, or audit prompts are ever transmitted to third-party cloud APIs. This architecture provides full verifiable compliance with <strong>GDPR Article 28</strong> (data sovereignty), <strong>HIPAA Security Rule § 164.312</strong>, and <strong>PCI-DSS v4.0 Requirement 6.3</strong>.
+                </p>
+            </div>
+
+            <!-- Architectural Specifications Grid -->
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1.5rem;">System Architecture &amp; Technical Specifications</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+                <!-- Card 1 -->
+                <div class="spec-section-card" style="margin: 0;">
+                    <div class="spec-card-head">
+                        <h4 class="spec-card-title">🧠 AI Cognitive Engine</h4>
+                        <span class="spec-tag spec-tag-accent">OFFLINE LOCAL</span>
+                    </div>
+                    <div class="spec-props-grid">
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Neural Model</span>
+                            <span class="spec-prop-val">Qwen 2.5-Coder (1.5B params)</span>
+                        </div>
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Inference Deployment</span>
+                            <span class="spec-prop-val">100% Localhost via Ollama</span>
+                        </div>
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Localhost Socket</span>
+                            <span class="spec-prop-val">http://127.0.0.1:11434</span>
+                        </div>
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Quantization</span>
+                            <span class="spec-prop-val">4-Bit GGUF / FP16 Mixed</span>
+                        </div>
+                    </div>
+                    <p class="spec-desc-text">
+                        Executes semantic AST data flow analysis, evaluates control-flow reachability, validates cross-method taint chains, and synthesizes concrete developer code patches without external cloud API dependencies.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="spec-section-card" style="margin: 0;">
+                    <div class="spec-card-head">
+                        <h4 class="spec-card-title">📚 Dual-Stream Hybrid RAG</h4>
+                        <span class="spec-tag spec-tag-purple">2,075 CONTROLS</span>
+                    </div>
+                    <div class="spec-props-grid">
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Retrieval Architecture</span>
+                            <span class="spec-prop-val">BM25 + TF-IDF Vector Space</span>
+                        </div>
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Rank Fusion Algorithm</span>
+                            <span class="spec-prop-val">RRF (Reciprocal Rank, k=60)</span>
+                        </div>
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Knowledge Graph</span>
+                            <span class="spec-prop-val">34 Ontology Taxonomy Edges</span>
+                        </div>
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Average Latency</span>
+                            <span class="spec-prop-val">&lt; 2.4 ms (In-Memory Inverted Index)</span>
+                        </div>
+                    </div>
+                    <p class="spec-desc-text">
+                        Grounds scanner signals with deterministic security controls, neutralizing LLM hallucinations by enforcing strict ontological mappings between raw code flaws and authoritative industry playbooks.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="spec-section-card" style="margin: 0;">
+                    <div class="spec-card-head">
+                        <h4 class="spec-card-title">⚡ Dynamic Runtime Instrumentation</h4>
+                        <span class="spec-tag spec-tag-cyan">FRIDA 16.x DBI</span>
+                    </div>
+                    <div class="spec-props-grid">
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">DBI Framework</span>
+                            <span class="spec-prop-val">Frida 16.x + ADB Daemon Bridge</span>
+                        </div>
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Interception Surface</span>
+                            <span class="spec-prop-val">Cipher, KeyStore, SQLite, Sockets</span>
+                        </div>
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Dynamic Evasion Check</span>
+                            <span class="spec-prop-val">Root Evasion &amp; SSL Pinning Check</span>
+                        </div>
+                        <div class="spec-prop">
+                            <span class="spec-prop-label">Sandbox Lifecycle</span>
+                            <span class="spec-prop-val">Auto-Install ➔ Hook ➔ Clean Uninstall</span>
+                        </div>
+                    </div>
+                    <p class="spec-desc-text">
+                        Instruments running Android applications to capture in-memory cryptographic keys, unencrypted SQLite database transactions, and live cleartext network traffic, automatically sanitizing the test device upon completion.
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="spec-section-card" style="margin: 0;">
+                    <div class="spec-card-head">
+                        <h4 class="spec-card-title">📊 Empirical Accuracy &amp; Baselines</h4>
+                        <span class="spec-tag spec-tag-green">168 BENCHMARK CASES</span>
+                    </div>
+                    <div class="spec-bench-metrics" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 0.75rem;">
+                        <div class="spec-metric-box">
+                            <div class="spec-metric-number">93.8%</div>
+                            <div class="spec-metric-label">Precision (vs 56.7% MobSF)</div>
+                        </div>
+                        <div class="spec-metric-box">
+                            <div class="spec-metric-number">93.8%</div>
+                            <div class="spec-metric-label">Recall (vs 59.4% MobSF)</div>
+                        </div>
+                        <div class="spec-metric-box">
+                            <div class="spec-metric-number">0.938</div>
+                            <div class="spec-metric-label">F1-Score (vs 0.580 MobSF)</div>
+                        </div>
+                        <div class="spec-metric-box">
+                            <div class="spec-metric-number">89.5%</div>
+                            <div class="spec-metric-label">Noise Suppression (NSR)</div>
+                        </div>
+                    </div>
+                    <p class="spec-desc-text">
+                        Evaluated across 168 controlled benchmark cases across 11 standard suites (DroidBench, Ghera, OWApp, Vulnerable Apps, IccBench, etc.) and real-world binaries (ZArchiver, FileConverter), suppressing false-positive alert fatigue while sustaining 47.3s average execution time.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Standards Covered -->
+            <div style="background: var(--surface-light, #ffffff); border: 1px solid var(--border-light); border-radius: 12px; padding: 2rem; margin-bottom: 3rem;">
+                <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin-top: 0; margin-bottom: 1rem;">Industry Standards &amp; Taxonomies Covered</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem;">
+                    <div style="background: var(--bg-alt); padding: 1.25rem; border-radius: 8px; border-left: 3px solid var(--accent);">
+                        <strong style="color: var(--text-primary); font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">OWASP Mobile Top 10 (2024)</strong>
+                        <span style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">Comprehensive M1–M10 vulnerability classification from improper credential usage to insecure data storage.</span>
+                    </div>
+                    <div style="background: var(--bg-alt); padding: 1.25rem; border-radius: 8px; border-left: 3px solid #2563eb;">
+                        <strong style="color: var(--text-primary); font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">OWASP API Security Top 10 (2023)</strong>
+                        <span style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">Backend endpoint verification covering Broken Object Level Authorization (BOLA), mass assignment, and SSRF.</span>
+                    </div>
+                    <div style="background: var(--bg-alt); padding: 1.25rem; border-radius: 8px; border-left: 3px solid #059669;">
+                        <strong style="color: var(--text-primary); font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">MITRE CWE &amp; CAPEC</strong>
+                        <span style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">Formal Common Weakness Enumeration IDs and attack pattern mappings for every flagged finding.</span>
+                    </div>
+                    <div style="background: var(--bg-alt); padding: 1.25rem; border-radius: 8px; border-left: 3px solid #7c3aed;">
+                        <strong style="color: var(--text-primary); font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">CVSS v3.1 Risk Scoring</strong>
+                        <span style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5;">Deterministic Base Score calculation across Attack Vector, Attack Complexity, Privileges, and Impact scopes.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div style="text-align: center; margin-top: 3rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="scan.html" class="btn btn-primary" style="padding: 0.8rem 2rem; font-weight: 700; text-decoration: none;">Launch Security Scan</a>
+                <a href="features.html" class="btn btn-secondary" style="padding: 0.8rem 1.75rem; text-decoration: none;">Explore Features ➔</a>
+                <a href="how-it-works.html" class="btn btn-secondary" style="padding: 0.8rem 1.75rem; text-decoration: none;">10-Phase Pipeline ➔</a>
+                <a href="docs.html" class="btn btn-secondary" style="padding: 0.8rem 1.75rem; text-decoration: none;">Documentation &amp; Evidence ➔</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="main-footer" style="margin-top: 5rem; border-top: 1px solid var(--border-light); padding: 2rem 0;">
+        <div class="footer-content" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+            <div class="footer-brand" style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary);">
+                <div class="logo-symbol">
+                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+                        <path d="M14 2L2 8v12l12 6 12-6V8L14 2z" stroke="currentColor" stroke-width="1.5" fill="none" />
+                        <path d="M14 8l-6 3v6l6 3 6-3v-6l-6-3z" fill="currentColor" opacity="0.3" />
+                        <circle cx="14" cy="14" r="3" fill="currentColor" />
+                    </svg>
+                </div>
+                <span>Mobile Security Agent v2.0</span>
+            </div>
+            <div class="footer-standards" style="font-size: 0.75rem; color: var(--text-muted); text-align: center; letter-spacing: 0.5px;">
+                OWASP MOBILE TOP 10 (2024) &nbsp;·&nbsp; OWASP API TOP 10 (2023) &nbsp;·&nbsp; MASTG / MASVS v2.0 &nbsp;·&nbsp; CWE &nbsp;·&nbsp; CAPEC &nbsp;·&nbsp; NIST NVD
+            </div>
+            <p class="footer-copy" style="font-size: 0.72rem; color: var(--text-muted); margin: 0;">© 2026 Mobile Security Agent v2.0. Autonomous Penetration Testing Platform.</p>
+        </div>
+    </footer>
+
+    <script src="/static/app.js?v=9.0"></script>
+</body>
+</html>

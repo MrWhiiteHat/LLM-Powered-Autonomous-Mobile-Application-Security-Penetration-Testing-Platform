@@ -1,0 +1,52 @@
+{
+  "M1": {
+    "name": "Improper Credential Usage",
+    "description": "Hardcoded credentials, improper key management, or credentials in code.",
+    "remediation": "1. Utilize a secure credentials vault or external configuration service.\n2. Leverage platform keystores (Android Keystore System or iOS Keychain) to encrypt secrets at rest.\n3. Implement proper key rotation schemes and avoid checking secrets into version control."
+  },
+  "M2": {
+    "name": "Inadequate Supply Chain Security",
+    "description": "Third-party libraries with known vulnerabilities, missing verification, or malicious packages.",
+    "remediation": "1. Audit third-party dependencies regularly using Software Composition Analysis (SCA) tools.\n2. Maintain an up-to-date Software Bill of Materials (SBOM).\n3. Keep all external dependencies updated to their latest security-patched versions."
+  },
+  "M3": {
+    "name": "Insecure Authentication/Authorization",
+    "description": "Weak authentication or missing authorization checks on API endpoints.",
+    "remediation": "1. Implement multi-factor authentication (MFA) and strong password complexity requirements.\n2. Always validate sessions and access tokens server-side.\n3. Use standard authorization flows (OAuth 2.0 / OpenID Connect)."
+  },
+  "M4": {
+    "name": "Insufficient Input/Output Validation",
+    "description": "Missing input validation leading to injection attacks or data leakage.",
+    "remediation": "1. Sanitize and validate all user inputs using strict allowlists.\n2. Utilize parameterized queries (PreparedStatements) for database interactions.\n3. Encode all output data rendered in WebViews to prevent injection."
+  },
+  "M5": {
+    "name": "Insecure Communication",
+    "description": "Cleartext traffic, missing SSL pinning, or weak TLS configurations.",
+    "remediation": "1. Enforce TLS 1.2 or 1.3 for all connections.\n2. Implement robust SSL/TLS certificate pinning using OkHttp (Android) or TrustKit (iOS).\n3. Block cleartext HTTP traffic via Network Security Config (Android) or App Transport Security (iOS)."
+  },
+  "M6": {
+    "name": "Inadequate Privacy Controls",
+    "description": "Excessive data collection, insecure data leakage, or missing privacy controls.",
+    "remediation": "1. Minimize data collection to the absolute minimum required for core functionality.\n2. Encrypt sensitive personal identifiable information (PII) before storage or transmission.\n3. Implement user consent flows for data sharing and comply with GDPR/CCPA regulations."
+  },
+  "M7": {
+    "name": "Insufficient Binary Protections",
+    "description": "No code obfuscation, anti-tampering, or anti-debugging mechanisms.",
+    "remediation": "1. Enable code obfuscation and optimization tools like ProGuard or R8.\n2. Implement runtime self-protection (RASP) to detect emulator execution, debugging hooks, and rooted environments.\n3. Verify application integrity by checking code signatures at runtime."
+  },
+  "M8": {
+    "name": "Security Misconfiguration",
+    "description": "Debug mode enabled, insecure exported components, or unsafe default settings.",
+    "remediation": "1. Set android:debuggable to false in production manifests.\n2. Explicitly set android:exported to false for components that do not require public access.\n3. Apply strong permission requirements to any exported component that must remain public."
+  },
+  "M9": {
+    "name": "Insecure Data Storage",
+    "description": "Sensitive data stored in cleartext inside SQLite databases, SharedPreferences, or external storage.",
+    "remediation": "1. Use EncryptedSharedPreferences (Android) or Apple Keychain Services with high protection classes (iOS).\n2. Encrypt local databases using SQLCipher.\n3. Never write sensitive session tokens, credentials, or PII to external storage directories."
+  },
+  "M10": {
+    "name": "Insufficient Cryptography",
+    "description": "Use of weak cryptographic algorithms, hard-coded encryption keys, or weak random number generation.",
+    "remediation": "1. Implement strong, industry-standard cryptographic primitives such as AES-256-GCM.\n2. Never hardcode encryption keys or initialization vectors; generate them dynamically and store them securely in the hardware keystore.\n3. Use cryptographically secure random number generators (SecureRandom) for all keys, salts, and nonces."
+  }
+}

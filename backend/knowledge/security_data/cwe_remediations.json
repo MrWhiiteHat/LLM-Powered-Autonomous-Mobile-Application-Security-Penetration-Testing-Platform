@@ -1,0 +1,142 @@
+{
+  "CWE-78": {
+    "name": "OS Command Injection",
+    "remediation": "1. Validate and sanitize all inputs before executing system commands.\n2. Avoid using shell execution; use secure, typed APIs (e.g., ProcessBuilder on Android with explicit argument lists).\n3. Implement strict character allowlists for any input passed to commands."
+  },
+  "CWE-89": {
+    "name": "SQL Injection",
+    "remediation": "1. Use parameterized queries (PreparedStatement) for all database operations.\n2. Never concatenate untrusted inputs directly into raw SQL strings.\n3. Utilize secure ORM libraries with built-in parameterization."
+  },
+  "CWE-79": {
+    "name": "Cross-site Scripting / WebView Injection",
+    "remediation": "1. Disable JavaScript in WebViews if not strictly required (webView.getSettings().setJavaScriptEnabled(false)).\n2. Implement a robust Content Security Policy (CSP).\n3. Sanitize and HTML-encode any user inputs rendered inside the WebView."
+  },
+  "CWE-470": {
+    "name": "Unsafe Reflection / Dynamic Class Loading",
+    "remediation": "1. Avoid using Class.forName() with dynamically resolved or user-controlled string arguments.\n2. Use a hardcoded allowlist to validate class names before instantiation.\n3. Keep reflection strictly static and compile-time checked where possible."
+  },
+  "CWE-494": {
+    "name": "Dynamic Class Loading of Untrusted Code",
+    "remediation": "1. Avoid downloading and executing external dex/jar files or bundles at runtime.\n2. If dynamic loading is unavoidable, verify the integrity of the downloaded file using strong cryptographic signatures (e.g., SHA-256) against a pre-signed trusted key.\n3. Ensure files are downloaded over secure HTTPS channels with certificate pinning."
+  },
+  "CWE-327": {
+    "name": "Use of a Broken or Risky Cryptographic Algorithm",
+    "remediation": "1. Never implement custom cryptography or proprietary XOR-based obfuscation loops for sensitive data.\n2. Utilize standard, industry-proven cryptographic libraries and algorithms (e.g., AES-256-GCM via Android Keystore / iOS Keychain).\n3. Avoid 'roll-your-own' security controls."
+  },
+  "CWE-927": {
+    "name": "Use of Implicit Intent for Sensitive Communication / Deep Link Redirect",
+    "remediation": "1. Avoid parsing raw query parameters from custom deep-link schemes directly into Intent launches.\n2. Validate and sanitize all incoming deep-link parameters using a strict allowlist.\n3. Use explicit intents instead of implicit intents for internal app communication."
+  },
+  "CWE-506": {
+    "name": "Embedded Malicious Code / Behavioral Profiling",
+    "remediation": "1. Audit all third-party dependencies and transitive dependencies for anomalous behaviors.\n2. Implement runtime self-protection (RASP) to detect tampering, debugging, and hook frameworks.\n3. Enforce strict principle of least privilege: request only permissions that are strictly necessary for core functionality."
+  },
+  "CWE-312": {
+    "name": "Cleartext Storage of Sensitive Information",
+    "remediation": "1. Encrypt all sensitive data before writing it to local storage.\n2. Use EncryptedSharedPreferences (Android) or Keychain Services with high protection classes (iOS).\n3. Do not store sensitive tokens, credit cards, or passwords in plain text databases."
+  },
+  "CWE-200": {
+    "name": "Exposure of Sensitive Information to an Unauthorized Actor",
+    "remediation": "1. Disable verbose debug logging and ensure no sensitive variables are printed to Logcat or console.\n2. Mask sensitive fields (e.g., credit card numbers, passwords) in UI and logs.\n3. Prevent application screenshots by setting FLAG_SECURE on Android window managers."
+  },
+  "CWE-798": {
+    "name": "Use of Hard-coded Credentials",
+    "remediation": "1. Remove all hardcoded API keys, private keys, passwords, and tokens from source code and assets.\n2. Retrieve keys dynamically from a secure remote configuration server using runtime authentication.\n3. Restrict and scope client-side API keys using referrer restrictions, package name checks, or IP allowlists."
+  },
+  "CWE-295": {
+    "name": "Improper Certificate Validation / Missing SSL Pinning",
+    "remediation": "1. Implement robust SSL/TLS certificate pinning using TrustKit (iOS) or OkHttp CertificatePinner (Android).\n2. Never bypass default trust managers or implement empty X509TrustManager methods that trust all certificates.\n3. Pin against the intermediate or root CA certificate to allow certificates to rotate safely."
+  },
+  "CWE-319": {
+    "name": "Cleartext Transmission of Sensitive Information",
+    "remediation": "1. Enforce HTTPS for all network communication and block HTTP fallback.\n2. Set cleartextTrafficPermitted to false in Android Network Security Config.\n3. Enable App Transport Security (ATS) with NSAllowsArbitraryLoads set to false in iOS Info.plist."
+  },
+  "CWE-693": {
+    "name": "Protection Mechanism Failure / Missing Protections",
+    "remediation": "1. Integrate third-party integrity checks to detect Frida, Xposed, Magisk, or substrate hooking tools.\n2. Implement anti-debugger checks using ptrace or platform APIs.\n3. Detect rooted or jailbroken operating system environments and gracefully terminate sensitive app flows."
+  },
+  "CWE-922": {
+    "name": "Insecure Storage of Sensitive Information",
+    "remediation": "1. Restrict local file permissions to private mode (MODE_PRIVATE).\n2. Encrypt SQLite databases with SQLCipher.\n3. Never store credentials, tokens, or encryption keys in plain text files in the application's cache."
+  },
+  "CWE-925": {
+    "name": "Improper Verification of Intent Source",
+    "remediation": "1. Validate and sanitize all incoming intents and extras to ensure they come from authorized application modules.\n2. Use pending intents with explicit configurations when passing execution contexts to third parties.\n3. Keep critical application receivers closed or protected by custom signature permissions."
+  },
+  "CWE-926": {
+    "name": "Improper Export of Android Application Components",
+    "remediation": "1. Set android:exported to false for all activities, services, receivers, and providers that do not require external integration.\n2. For components that must be exported, enforce custom signature-level permissions so only your certified apps can interact with them.\n3. Validate all incoming intents to exported components before parsing parameter data."
+  },
+  "CWE-22": {
+    "name": "Path Traversal / Zip Slip",
+    "remediation": "1. Validate that destination file paths fall within the target directory boundary before extracting archives (e.g., check canonicalPath starts with destination directory).\n2. Sanitize user-controlled file paths, removing sequences like '../' or '..\\'.\n3. Use platform APIs with built-in path resolution limits."
+  },
+  "CWE-215": {
+    "name": "Insertion of Sensitive Info into Debug Code",
+    "remediation": "1. Ensure all debugging utilities, debug logs, and diagnostic assertions are disabled or removed in release builds.\n2. Configure ProGuard or R8 rules to automatically strip logging calls (e.g., Log.d, Log.v) during compilation.\n3. Verify that the android:debuggable flag is set to false."
+  },
+  "CWE-250": {
+    "name": "Execution with Unnecessary Privileges",
+    "remediation": "1. Minimize application permission requirements to only those strictly necessary for core operations.\n2. Use granular Android runtime permissions and iOS usage descriptions rather than requesting broad administrative privileges.\n3. Avoid executing command tasks under root contexts."
+  },
+  "CWE-276": {
+    "name": "Incorrect Default Permissions",
+    "remediation": "1. Restrict internal database and configuration file permissions so they are only readable by the application owner process (MODE_PRIVATE).\n2. Avoid using world-readable or world-writable flags on application files.\n3. Verify file permissions dynamically on system creation."
+  },
+  "CWE-287": {
+    "name": "Improper Authentication",
+    "remediation": "1. Enforce robust server-side token validation (such as cryptographically signed JWTs) for every API request.\n2. Implement local biometric authentication (Android BiometricPrompt, iOS LocalAuthentication) with keystore-backed key verification.\n3. Avoid relying solely on client-side state flags for auth checks."
+  },
+  "CWE-311": {
+    "name": "Missing Encryption of Sensitive Data",
+    "remediation": "1. Use standard encryption primitives (e.g., AES-GCM or RSA-OAEP) to secure sensitive payloads at rest and in transit.\n2. Never write plaintext credentials, session tokens, or personally identifiable info (PII) to local storage.\n3. Leverage secure hardware keys for encryption operations."
+  },
+  "CWE-321": {
+    "name": "Use of Hard-coded Cryptographic Key",
+    "remediation": "1. Remove hardcoded encryption keys, initialization vectors, and salt values from code and property files.\n2. Generate cryptographic keys dynamically at runtime and store them in secure hardware vaults (Android Keystore, iOS Keychain).\n3. Use key derivation functions (like PBKDF2) to derive keys from passwords dynamically."
+  },
+  "CWE-326": {
+    "name": "Inadequate Encryption Strength",
+    "remediation": "1. Use modern cryptographic algorithms with sufficient key lengths (e.g., AES-256 instead of DES/3DES/AES-128).\n2. Avoid using weak hash algorithms like MD5 or SHA-1 for cryptographic verification; transition to SHA-256 or SHA-3.\n3. Choose strong, random initialization vectors."
+  },
+  "CWE-524": {
+    "name": "Use of Cache Containing Sensitive Information",
+    "remediation": "1. Disable WebView credential caching and autocomplete mechanisms when handling sensitive user logins.\n2. Clear application memory caches, temporary files, and cookies during user logout events.\n3. Prevent sensitive data from being written to temporary cache files."
+  },
+  "CWE-530": {
+    "name": "Exposure of Sensitive Information Through Accessible Data",
+    "remediation": "1. Avoid storing sensitive application records in publicly shared directories (e.g., Android External SD Card storage).\n2. Always verify that directories used to cache transient data are marked private to the app sandbox.\n3. Run regular audits on file paths utilized by background tasks."
+  },
+  "CWE-532": {
+    "name": "Insertion of Sensitive Information into Log File",
+    "remediation": "1. Review code logging commands and ensure no authentication tokens, passwords, or PII are printed to system logs.\n2. Implement a logging wrapper that strips or masks potential secrets before outputting to Logcat or console logs.\n3. Strip logging statements completely from production binaries using compiler optimizer configuration."
+  },
+  "CWE-598": {
+    "name": "Use of GET Request Method With Sensitive Query Strings",
+    "remediation": "1. Pass sensitive credentials, authentication tokens, and user parameters inside POST/PUT request bodies instead of GET query parameters.\n2. Restrict backend route logging to prevent query parameters from being stored in cleartext server logs.\n3. Implement HTTPS to protect transit headers."
+  },
+  "CWE-639": {
+    "name": "Authorization Bypass Through User-Controlled Key",
+    "remediation": "1. Validate access rights server-side by checking the logged-in session token against requested resource IDs (prevent Insecure Direct Object Reference).\n2. Use non-predictable resource keys (such as UUIDs) to prevent simple identifier enumeration.\n3. Never trust client-provided permission claims."
+  },
+  "CWE-749": {
+    "name": "Exposed Dangerous Method or Function",
+    "remediation": "1. Mark sensitive native methods or helper utilities as private to prevent access by unauthorized classes.\n2. Restrict JavaScript interface exposures in WebViews (addJavascriptInterface) to only trusted functions and domains.\n3. Use security access modifiers to encapsulate dangerous routines."
+  },
+  "CWE-770": {
+    "name": "Allocation of Resources Without Limits or Throttling",
+    "remediation": "1. Enforce server-side rate limiting on all API endpoints using token bucket or leaky bucket algorithms.\n2. Set maximum payload limits for incoming requests and configure client-side request timeout boundaries.\n3. Limit the maximum size of dynamic memory buffers."
+  },
+  "CWE-919": {
+    "name": "Weaknesses in Mobile Applications",
+    "remediation": "1. Follow standard secure mobile coding guidelines (such as the OWASP Mobile Application Security Verification Standard).\n2. Implement routine static and dynamic application security reviews in development cycles.\n3. Verify third-party mobile SDKs for compliance."
+  },
+  "CWE-939": {
+    "name": "Improper Authorization in Handler for Custom URL Scheme",
+    "remediation": "1. Implement strict validation and origin checking on incoming custom URL scheme data.\n2. Avoid using custom URL parameters to execute actions directly without secondary user confirmation.\n3. Transition to standard Universal Links (iOS) or App Links (Android) for secure deep linking."
+  },
+  "CWE-1059": {
+    "name": "Insufficient Technical Documentation",
+    "remediation": "1. Document all API contracts, schemas, permissions, and security controls within the codebase.\n2. Provide developer documentation outlining secure integration guidelines for internal frameworks.\n3. Maintain clean, well-commented source modules."
+  }
+}

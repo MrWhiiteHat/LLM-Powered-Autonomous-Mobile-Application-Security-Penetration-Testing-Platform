@@ -1,9 +1,7 @@
-# Environments
+# Environments & Secrets
 .env
 .env.*
 !.env.example
-
-# Authentication & Keys
 *.pem
 *.key
 *.cert
@@ -14,7 +12,7 @@ credentials.json
 service-account.json
 client_secret.json
 
-# Python
+# Python & Caches
 __pycache__/
 *.py[cod]
 *$py.class
@@ -39,6 +37,7 @@ venv/
 .venv/
 env/
 ENV/
+.pytest_cache/
 
 # Node / JS
 node_modules/
@@ -47,13 +46,59 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# OS Files
+# OS Files & IDE
 .DS_Store
 Thumbs.db
 *.log
+.idea/
+.vscode/
 
-# Project specific
-uploads/
-reports/
+# Presentations & Documents (Non-system artifacts)
+*.pptx
+~$*.pptx
 *.pdf
 *.docx
+*.tex
+*.bib
+*.zip
+*.tar.gz
+*.rar
+thesis_latex/
+Mobile_Secuity_Agent_*
+Turnitin_*
+.qa_cgu_*
+PROJECT_PRESENTATION_MASTER_GUIDE.md
+
+# Application Packages & Test Binaries
+*.apk
+*.ipa
+test.apk
+test_apps/
+dataset/
+Android App/
+MSPT_Project_Package/
+uploads/
+scans/
+reports/
+
+# Runtime DBs, LLM Caches & Results
+*.db
+*.sqlite
+*.sqlite3
+backend/knowledge/llm_cache.json*
+scan_history.json
+restore-gate.json
+roster.json
+roster-backups/
+hive/
+results/
+tools/
+
+# Temporary / Scratch Scripts
+patch*.py
+apply_final_review_fixes.py
+python.py.txt
+check_status.py
+verify_scans.py
+batch_scan.py
+]

@@ -1,0 +1,52 @@
+{
+  "API1": {
+    "name": "Broken Object Level Authorization",
+    "description": "API endpoints are vulnerable because they do not validate if the user has permission to access the requested object ID.",
+    "remediation": "1. Implement an authorization check at the object level for every user request.\n2. Use randomized, non-sequential unique identifiers (UUIDs) for object IDs.\n3. Validate session tokens against user permissions before returning resources."
+  },
+  "API2": {
+    "name": "Broken Authentication",
+    "description": "Authentication mechanisms are poorly implemented, allowing attackers to brute-force or bypass auth.",
+    "remediation": "1. Implement rate limiting and account lockout thresholds on authentication endpoints.\n2. Enforce strong password complexity and utilize multi-factor authentication.\n3. Use standard JWT verification with secure signing keys and appropriate expiration times."
+  },
+  "API3": {
+    "name": "Broken Object Property Level Authorization",
+    "description": "Lack of authorization checks when editing or viewing specific fields of an object, leading to mass assignment.",
+    "remediation": "1. Restrict API input schemas to only allow editing of authorized fields (use DTOs or input allowlists).\n2. Avoid returning unnecessary properties in API responses; strip out sensitive administrative fields.\n3. Explicitly define which properties are read-only and which are editable."
+  },
+  "API4": {
+    "name": "Unrestricted Resource Consumption",
+    "description": "Lack of rate limiting or size limits allows attackers to cause denial of service (DoS) or inflate costs.",
+    "remediation": "1. Enforce strict rate limits (e.g., requests per minute) per IP, token, or user account.\n2. Implement limits on request payload size, database query timeouts, and file upload sizes.\n3. Limit the number of records returned in a single paginated API response."
+  },
+  "API5": {
+    "name": "Broken Function Level Authorization",
+    "description": "Lack of administrative check on sensitive endpoints allows regular users to perform privileged tasks.",
+    "remediation": "1. Implement role-based access control (RBAC) and validate roles server-side.\n2. Deny access to administrative endpoints by default (fail-safe defaults).\n3. Maintain a central authorization module that checks user roles for all API controllers."
+  },
+  "API6": {
+    "name": "Unrestricted Access to Sensitive Business Flows",
+    "description": "Lack of anti-automation protection allows bots to exploit business flows like ticket buying or account creation.",
+    "remediation": "1. Implement CAPTCHA or advanced bot-detection systems on sensitive business endpoints.\n2. Profile user request velocity to detect anomalous automation patterns.\n3. Implement device fingerprinting and behavioral analysis to restrict automated bot scripts."
+  },
+  "API7": {
+    "name": "Server Side Request Forgery",
+    "description": "API retrieves external resources based on a user-provided URL without validation.",
+    "remediation": "1. Validate and sanitize all user-supplied URLs against a strict domain allowlist.\n2. Avoid parsing raw URLs directly; accept pre-defined identifiers or restrict schemas to HTTP/HTTPS.\n3. Block internal network IP ranges (loopback, private subnets) from being requested."
+  },
+  "API8": {
+    "name": "Security Misconfiguration",
+    "description": "Verbose error messages, debug endpoints enabled, or missing security headers.",
+    "remediation": "1. Disable debug logs, stack traces, and verbose error messages in production environments.\n2. Implement strong security headers (e.g., Content-Security-Policy, X-Content-Type-Options).\n3. Keep all third-party dependencies and frameworks updated to stable, patched versions."
+  },
+  "API9": {
+    "name": "Improper Inventory Management",
+    "description": "Old API versions (v1, beta) or unlisted endpoints remain active and unpatched.",
+    "remediation": "1. Document and inventory all API endpoints, parameters, and versions.\n2. Deprecate and shut down old, unpatched API versions as soon as possible.\n3. Implement strict access control lists on staging, testing, and beta environments."
+  },
+  "API10": {
+    "name": "Unsafe Consumption of APIs",
+    "description": "API trusts data received from third-party APIs without validation, leading to injection or logic bypass.",
+    "remediation": "1. Sanitize and validate all data received from external integrations and third-party APIs.\n2. Apply the principle of least privilege when granting permissions to external API tokens.\n3. Implement strict timeout thresholds and fallback logic for third-party integrations."
+  }
+}

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Mobile Security Agent — Autonomous AI-powered mobile application security penetration testing platform.">
-    <title>Ai Power Mobile Security Agents - Project Details</title>
+        content="Mobile Security Agent v2.0 — Autonomous AI-powered mobile application security penetration testing platform with RAG-grounded LLM reasoning.">
+    <title>Mobile Security Agent v2.0 — Autonomous Mobile Application Security Penetration Testing Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -19,7 +19,7 @@
     <!-- Main Content -->
     <header id="main-header">
         <nav class="nav-container">
-            <a href="#" class="nav-logo" id="nav-logo">
+            <a href="index.html" class="nav-logo" id="nav-logo">
                 <div class="logo-symbol">
                     <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                         <path d="M14 2L2 8v12l12 6 12-6V8L14 2z" stroke="currentColor" stroke-width="1.5" fill="none" />
@@ -27,13 +27,14 @@
                         <circle cx="14" cy="14" r="3" fill="currentColor" />
                     </svg>
                 </div>
-                <span class="logo-text">MSA</span>
+                <span class="logo-text">MSA v2.0</span>
             </a>
             <div class="nav-center" id="nav-links">
-                <a href="#about" class="nav-link">About</a>
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#how-it-works" class="nav-link">How it Works</a>
-                <a href="#scan" class="nav-link">Scan</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="features.html" class="nav-link">Features</a>
+                <a href="how-it-works.html" class="nav-link">How it Works</a>
+                <a href="docs.html" class="nav-link">Docs</a>
+                <a href="scan.html" class="nav-link">Scan</a>
             </div>
             <div class="nav-right">
                 <div class="status-pill" id="server-status">
@@ -49,10 +50,11 @@
         </nav>
         <!-- Mobile Menu -->
         <div class="mobile-menu hidden" id="mobile-menu">
-            <a href="#about" class="mobile-link">About</a>
-            <a href="#features" class="mobile-link">Features</a>
-            <a href="#how-it-works" class="mobile-link">How it Works</a>
-            <a href="#scan" class="mobile-link">Scan</a>
+            <a href="about.html" class="mobile-link">About</a>
+            <a href="features.html" class="mobile-link">Features</a>
+            <a href="how-it-works.html" class="mobile-link">How it Works</a>
+            <a href="docs.html" class="mobile-link">Docs</a>
+            <a href="scan.html" class="mobile-link">Scan</a>
         </div>
     </header>
 
@@ -63,26 +65,25 @@
             <div class="hero-content">
                 <div class="hero-badge">
                     <span class="badge-tag">AI-POWERED</span>
-                    <span class="badge-text">Your Security Agent →</span>
+                    <span class="badge-text">Autonomous Pentesting Agent v2.0 →</span>
                 </div>
                 <h1 class="hero-title">
-                    Ai Power Mobile<br>
-                    Security Agents
+                    Autonomous Mobile<br>
+                    Security Testing Agent
                 </h1>
                 <div class="hero-image-container">
                     <img src="/static/images/hero-front.png" alt="AI Security Agent" class="hero-image" id="hero-img">
                     <div class="hero-image-glow"></div>
                 </div>
                 <h2 class="hero-subtitle">
-                    with trusted AI<br>Agents.
+                    with Localhost-Confined<br>RAG &amp; LLM Reasoning.
                 </h2>
                 <div class="hero-cta-group">
-                    <a href="#scan" class="btn btn-primary" id="hero-scan-btn">START SCANNING</a>
-                    <a href="#features" class="btn btn-outline-accent">LEARN MORE</a>
+                    <a href="scan.html" class="btn btn-primary" id="hero-scan-btn">START SCANNING</a>
+                    <a href="docs.html" class="btn btn-outline-accent">BENCHMARK EVIDENCE &amp; DOCS</a>
                 </div>
                 <p class="hero-desc">
-                    MSA pairs powerful AI with static analysis, reverse engineering,
-                    and dynamic testing so your team can automate mobile security without losing control.
+                    MSA v2.0 pairs deep static AST taint analysis, APKTool decompilation, and automated Frida dynamic instrumentation with an in-memory RAG cognitive auditor — achieving 93.8% precision, 93.8% recall, and 89.5% noise suppression across 168 controlled benchmark test cases and real-world application audits.
                 </p>
             </div>
         </section>
@@ -94,10 +95,11 @@
                 <h2 class="section-title">Project Architecture &<br><span class="title-accent">Extensive Details.</span>
                 </h2>
                 <p
-                    style="color: var(--text-secondary, #4b5563); margin-top: 1rem; max-width: 800px; margin-left: auto; margin-right: auto; text-align: center; line-height: 1.6;">
-                    The Mobile Security Agent is an advanced, LLM-powered Autonomous Mobile Application Security
+                    style="color: var(--text-secondary, #4b5563); margin-top: 1rem; max-width: 850px; margin-left: auto; margin-right: auto; text-align: center; line-height: 1.6;">
+                    The Mobile Security Agent (MSA v2.0) is an advanced, LLM-powered Autonomous Mobile Application Security
                     Penetration Testing platform designed strictly for authorized, ethical security audits of Android
-                    and iOS mobile applications.
+                    and iOS mobile applications. Operating within a 100% host-confined processing boundary, all decompilation,
+                    AST extraction, and local LLM inference occur in RAM without cloud data exfiltration.
                 </p>
             </div>
 
@@ -318,7 +320,7 @@
                     <h3 class="feature-title">Deep Code Inspection</h3>
                     <p class="feature-desc">Automated decompilation, manifest parsing, and vulnerability detection with
                         OWASP Mobile Top 10 compliance.</p>
-                    <a href="#scan" class="feature-link">Start Scan →</a>
+                    <a href="scan.html" class="feature-link">Start Scan →</a>
                 </div>
             </div>
 
@@ -326,56 +328,72 @@
             <div class="integrations-card">
                 <div class="integrations-visual">
                     <div class="integration-orbit">
-                        <div class="orbit-center">
+                        <div class="orbit-center orbit-clickable" data-topic="OWASP MASVS" title="Inspect MASVS Security Architecture">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.5">
                                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                             </svg>
                         </div>
-                        <div class="orbit-item orbit-1" title="OWASP">
+                        <div class="orbit-item orbit-1 orbit-clickable" data-topic="OWASP" title="OWASP Mobile Top 10 Security Standards">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.5">
                                 <circle cx="12" cy="12" r="10" />
                                 <path d="M12 6v6l4 2" />
                             </svg>
+                            <span class="orbit-label">OWASP</span>
                         </div>
-                        <div class="orbit-item orbit-2" title="APIs">
+                        <div class="orbit-item orbit-2 orbit-clickable" data-topic="API" title="OWASP API Security Top 10 Standards">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.5">
                                 <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
                                 <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
                             </svg>
+                            <span class="orbit-label">API</span>
                         </div>
-                        <div class="orbit-item orbit-3" title="CWE">
+                        <div class="orbit-item orbit-3 orbit-clickable" data-topic="CWE" title="MITRE Common Weakness Enumeration Taxonomy">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.5">
                                 <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
                                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
                             </svg>
+                            <span class="orbit-label">CWE</span>
                         </div>
-                        <div class="orbit-item orbit-4" title="MSTG">
+                        <div class="orbit-item orbit-4 orbit-clickable" data-topic="MASVS" title="OWASP MASTG / MASVS Mobile Verification Standard">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.5">
                                 <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
                                 <line x1="12" y1="18" x2="12.01" y2="18" />
                             </svg>
+                            <span class="orbit-label">MASTG</span>
                         </div>
                     </div>
                 </div>
                 <div class="feature-info">
-                    <div class="feature-tag tag-loop">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <polyline points="23 4 23 10 17 10" />
-                            <polyline points="1 20 1 14 7 14" />
-                            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
-                        </svg>
-                        <span>Automated Pipeline</span>
+                    <div class="feature-tag tag-loop" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div style="display: flex; align-items: center; gap: 0.4rem;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="23 4 23 10 17 10" />
+                                <polyline points="1 20 1 14 7 14" />
+                                <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+                            </svg>
+                            <span>Automated Pipeline</span>
+                        </div>
+                        <span style="font-size: 0.65rem; color: var(--accent); background: var(--accent-light); padding: 2px 8px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px;">CLICK NODES FOR INFO</span>
                     </div>
                     <h3 class="feature-title">Automated Workflows</h3>
-                    <p class="feature-desc">Trigger analysis across OWASP, MSTG, CWE databases and more to fully close
-                        the security loop.</p>
-                    <a href="#how-it-works" class="feature-link">View Docs →</a>
+                    <p class="feature-desc">Trigger automated analysis across OWASP, MSTG, and CWE databases to fully close the security loop with RAG-grounded remediation.</p>
+                    <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-outline-accent" id="explore-workflow-btn" onclick="openOrbitTopic('Automated Workflows')" style="padding: 0.45rem 1rem; font-size: 0.82rem; font-weight: 700; border-radius: 20px; display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="16" x2="12" y2="12"/>
+                                <line x1="12" y1="8" x2="12.01" y2="8"/>
+                            </svg>
+                            View Workflow Info
+                        </button>
+                        <a href="docs.html" class="feature-link" style="margin-top: 0;">View Docs &rarr;</a>
+                    </div>
                 </div>
             </div>
 
@@ -413,7 +431,7 @@
                     <h3 class="feature-title">Knowledge-grounded Answers</h3>
                     <p class="feature-desc">Rooted in OWASP standards, MSTG guidelines, and CWE databases — always up to
                         date.</p>
-                    <a href="#" class="feature-link">View Docs →</a>
+                    <a href="docs.html" class="feature-link">View Docs →</a>
                 </div>
             </div>
         </section>
@@ -475,7 +493,7 @@
         <section class="cta-banner">
             <div class="cta-content">
                 <span class="cta-slash">//</span>
-                <a href="#scan" class="btn btn-primary btn-lg" id="cta-scan-btn">START SCANNING</a>
+                <a href="scan.html" class="btn btn-primary btn-lg" id="cta-scan-btn">START SCANNING</a>
                 <span class="cta-slash">//</span>
             </div>
         </section>
@@ -557,13 +575,20 @@
                     <!-- Live Terminal Output -->
                     <div class="live-terminal" id="live-terminal">
                         <div class="terminal-header">
-                            <span class="terminal-dot" style="background:#ef4444"></span>
-                            <span class="terminal-dot" style="background:#f59e0b"></span>
-                            <span class="terminal-dot" style="background:#22c55e"></span>
-                            <span class="terminal-title">LIVE ANALYSIS LOG</span>
+                            <div class="terminal-header-left">
+                                <span class="terminal-dot" style="background:#ef4444"></span>
+                                <span class="terminal-dot" style="background:#f59e0b"></span>
+                                <span class="terminal-dot" style="background:#22c55e"></span>
+                                <span class="terminal-title">LIVE ENGINE TELEMETRY</span>
+                            </div>
+                            <div class="terminal-header-right">
+                                <span class="terminal-status-pill active" id="terminal-status-pill"><span class="term-pulse"></span> STREAMING</span>
+                                <span class="terminal-counter" id="terminal-log-counter">0 events</span>
+                                <button type="button" class="terminal-action-btn" id="terminal-copy-btn" title="Copy all logs to clipboard">Copy</button>
+                            </div>
                         </div>
                         <div class="terminal-body" id="terminal-output">
-                            <div class="terminal-line">[INIT] Preparing analysis environment...</div>
+                            <div class="terminal-line"><span class="t-tag t-init">[INIT]</span> <span class="t-msg">Preparing analysis environment & binary sandboxes...</span></div>
                         </div>
                     </div>
                 </div>
@@ -591,6 +616,7 @@
                         <button class="filter-pill" data-filter="high">High</button>
                         <button class="filter-pill" data-filter="medium">Medium</button>
                         <button class="filter-pill" data-filter="low">Low</button>
+                        <button class="filter-pill" data-filter="fp" id="filter-fp-btn" style="border-color: rgba(16,185,129,0.3); color: #10b981;">Suppressed FPs</button>
                     </div>
                 </div>
                 <div class="findings-list" id="findings-list"></div>
@@ -623,17 +649,42 @@
                         <circle cx="14" cy="14" r="3" fill="currentColor" />
                     </svg>
                 </div>
-                <span>MSA — Mobile Security Agent v1.0</span>
+                <span>MSA — Mobile Security Agent v2.0</span>
             </div>
             <div class="footer-standards">
-                OWASP MOBILE TOP 10 &nbsp;·&nbsp; OWASP API TOP 10 &nbsp;·&nbsp; MSTG &nbsp;·&nbsp; CWE &nbsp;·&nbsp;
-                CAPEC
+                OWASP MOBILE TOP 10 (2024) &nbsp;·&nbsp; OWASP API TOP 10 (2023) &nbsp;·&nbsp; MASTG / MASVS v2.0 &nbsp;·&nbsp; CWE &nbsp;·&nbsp; CAPEC &nbsp;·&nbsp; NIST NVD
             </div>
-            <p class="footer-copy">© 2026 Mobile Security Agent. Autonomous Penetration Testing.</p>
+            <p class="footer-copy">© 2026 Mobile Security Agent v2.0. Autonomous Penetration Testing Platform.</p>
         </div>
     </footer>
 
-    <script src="/static/app.js?v=2.0"></script>
+    <!-- Futuristic Knowledge Base HUD Drawer Overlay -->
+    <div id="hud-overlay" class="hud-overlay-backdrop hidden"></div>
+    <div id="hud-drawer" class="hud-drawer-panel hidden">
+        <div class="hud-panel-glow"></div>
+        <div class="hud-header">
+            <div class="hud-header-title-wrapper">
+                <span class="hud-icon-badge">LOCAL RAG KNOWLEDGE BASE</span>
+                <h3 class="hud-title" id="hud-title">SECURITY TAXONOMY</h3>
+            </div>
+            <button class="hud-close-button" id="hud-close-btn" aria-label="Close HUD">&times;</button>
+        </div>
+        <div class="hud-scanner-banner">
+            <div class="hud-scan-line"></div>
+            <span class="hud-scan-status">2,075 SECURITY CONTROLS INDEXED &middot; BM25+TF-IDF RRF (k=60)</span>
+        </div>
+        <div class="hud-body">
+            <div class="hud-loading-container hidden" id="hud-loading-state">
+                <div class="hud-pulse-ring"></div>
+                <div class="hud-pulse-ring delay-1"></div>
+                <div class="hud-sonar-radar"></div>
+                <span class="hud-loading-text">SEARCHING HYBRID RAG BASE...</span>
+            </div>
+            <div id="hud-results-container"></div>
+        </div>
+    </div>
+
+    <script src="/static/app.js?v=9.0"></script>
 </body>
 
 </html>

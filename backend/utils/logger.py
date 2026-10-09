@@ -17,6 +17,14 @@ def get_logger(name: str, level: int = logging.DEBUG) -> logging.Logger:
     if logger.handlers:
         return logger
 
+    # Ensure stdout/stderr safely handle UTF-8 / non-ASCII on Windows
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            try:
+                stream.reconfigure(encoding="utf-8", errors="replace")
+            except Exception:
+                pass
+
     # Console handler with color formatting
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)

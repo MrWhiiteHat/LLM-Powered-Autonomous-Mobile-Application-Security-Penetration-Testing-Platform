@@ -6,6 +6,8 @@ import re
 import json
 import zipfile
 from pathlib import Path
+
+from utils.analysis_helpers import is_high_entropy_secret
 from typing import Optional
 
 from utils.logger import get_logger
@@ -69,16 +71,47 @@ class ReverseEngineer:
                         })
                     # Check for certificate/key files
                     if ext in (".key", ".pem", ".cert", ".crt", ".p12", ".pfx", ".jks"):
-                        self.findings.append({
-                            "title": f"Certificate/Key File Found: {info.filename}",
-                            "severity": "high",
-                            "description": f"Found {ext} file bundled in the application. "
-                                           "This may contain private keys or certificates.",
-                            "category": "reverse_engineering",
-                            "owasp": "M1",
-                            "cwe": "CWE-321",
-                            "evidence": info.filename,
-                        })
+                        if ext in (".p12", ".pfx", ".jks", ".key"):
+                            # Private key containers — always high severity
+                            self.findings.append({
+                                "title": f"Certificate/Key File Found: {info.filename}",
+                                "severity": "high",
+                                "description": f"Found {ext} file bundled in the application. "
+                                               "This may contain private keys or certificates.",
+                                "category": "reverse_engineering",
+                                "owasp": "M1",
+                                "cwe": "CWE-321",
+                                "evidence": info.filename,
+                            })
+                        else:
+                            # .pem, .cert, .crt — check if it contains a private key
+                            try:
+                                cert_content = zf.read(info.filename).decode("utf-8", errors="ignore")
+                            except Exception:
+                                cert_content = ""
+                            if "BEGIN PRIVATE KEY" in cert_content or "BEGIN RSA PRIVATE KEY" in cert_content:
+                                self.findings.append({
+                                    "title": f"Private Key File Found: {info.filename}",
+                                    "severity": "high",
+                                    "description": f"Found {ext} file containing a private key "
+                                                   "bundled in the application.",
+                                    "category": "reverse_engineering",
+                                    "owasp": "M1",
+                                    "cwe": "CWE-321",
+                                    "evidence": info.filename,
+                                })
+                            else:
+                                self.findings.append({
+                                    "title": f"Public Certificate Found: {info.filename}",
+                                    "severity": "info",
+                                    "confidence": "low",
+                                    "description": f"Found {ext} public certificate bundled in the "
+                                                   "application. No private key material detected.",
+                                    "category": "reverse_engineering",
+                                    "owasp": "M1",
+                                    "cwe": "CWE-321",
+                                    "evidence": info.filename,
+                                })
         except Exception as e:
             logger.error(f"File enumeration error: {e}")
 
@@ -116,6 +149,17 @@ class ReverseEngineer:
         content_lower = content.lower()
         for key in sensitive_keys:
             if key in content_lower:
+                # Look for a key=value pattern to extract the actual value
+                kv_pattern = re.compile(
+                    re.escape(key) + r'\s*(?:=|:|=>)\s*["\']?([^"\'\s,;}{\]\)]+)',
+                    re.IGNORECASE,
+                )
+                kv_match = kv_pattern.search(content)
+                if not kv_match:
+                    continue  # No key-value pair found, skip
+                value = kv_match.group(1)
+                if not is_high_entropy_secret(value, min_entropy=3.2, min_length=8):
+                    continue  # Low entropy or placeholder value, skip
                 self.findings.append({
                     "title": f"Sensitive Config: {key} in {filename}",
                     "severity": "high",
@@ -152,7 +196,7 @@ class ReverseEngineer:
                                     })
 
                         # API path patterns
-                        api_paths = re.findall(r'["\']/(api|v[12]|auth|graphql)/[\w\-./]+["\']', text)
+                        api_paths = re.findall(r'["\']/(?:api|v[12]|auth|graphql)/[\w\-./]+["\']', text)
                         for path in api_paths:
                             self.api_endpoints.append({
                                 "path": path if isinstance(path, str) else str(path),
@@ -185,6 +229,8 @@ class ReverseEngineer:
                         for token_type, pattern in token_patterns.items():
                             matches = re.findall(pattern, combined)
                             for match in matches[:3]:
+                                if not is_high_entropy_secret(match, min_entropy=3.0, min_length=10):
+                                    continue
                                 masked = match[:10] + "***" if len(match) > 10 else "***"
                                 self.tokens.append({
                                     "type": token_type,
@@ -193,6 +239,21 @@ class ReverseEngineer:
                                 })
                     except Exception:
                         pass
+                        
+            # After token extraction loop, convert self.tokens to findings
+            for token in self.tokens:
+                self.findings.append({
+                    "title": f"Embedded {token['type']}",
+                    "severity": "high",
+                    "description": f"{token['type']} found embedded in application code.",
+                    "category": "reverse_engineering",
+                    "owasp": "M1",
+                    "cwe": "CWE-798",
+                    "evidence": f"Token ({token['type']}) found in {token['source']}: {token['masked_value']}",
+                    "file_path": token['source'],
+                    "confidence": "high",
+                })
+
         except Exception as e:
             logger.error(f"Token extraction error: {e}")
 
@@ -264,15 +325,17 @@ class ReverseEngineer:
             pass
 
         missing = set(protection_checks.keys()) - found_protections
-        for prot in missing:
-            prot_display = prot.replace("_", " ").title()
+        if missing:
+            missing_display = [p.replace("_", " ").title() for p in sorted(missing)]
             self.findings.append({
-                "title": f"Missing Binary Protection: {prot_display}",
-                "severity": "medium",
-                "description": f"No {prot_display} mechanism detected. The application may be "
+                "title": f"Missing Binary Protections: {', '.join(missing_display)}",
+                "severity": "low",
+                "confidence": "low",
+                "description": f"The following binary protection mechanisms were not detected: "
+                               f"{', '.join(missing_display)}. The application may be "
                                f"vulnerable to runtime attacks.",
                 "category": "protection",
                 "owasp": "M7",
                 "cwe": "CWE-693",
-                "evidence": f"No {prot_display} patterns found",
+                "evidence": f"Missing: {', '.join(missing_display)}",
             })

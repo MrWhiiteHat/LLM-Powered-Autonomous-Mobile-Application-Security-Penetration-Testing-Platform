@@ -8,6 +8,8 @@ import zipfile
 from pathlib import Path
 from urllib.parse import urlparse
 
+from utils.analysis_helpers import line_scoped_search
+
 from utils.logger import get_logger
 
 logger = get_logger("APISecurity")
@@ -62,8 +64,17 @@ class APISecurityTester:
     def _analyze_discovered_endpoints(self):
         """Analyze discovered API endpoints for security issues."""
         for ep in self.api_endpoints:
-            url = ep.get("url", "")
-            parsed = urlparse(url)
+            # Normalize: support both dict and raw string endpoints
+            url = ep if isinstance(ep, str) else ep.get('url', '')
+
+            if not url or not isinstance(url, str):
+                continue
+
+            try:
+                parsed = urlparse(url)
+            except Exception as e:
+                logger.debug(f"Invalid URL encountered: {e}")
+                continue
 
             analysis = {
                 "url": url,
@@ -78,7 +89,7 @@ class APISecurityTester:
                 analysis["issues"].append("Uses HTTP instead of HTTPS")
 
             # Check for sensitive paths
-            sensitive_paths = ["/admin", "/debug", "/test", "/internal", "/swagger",
+            sensitive_paths = ["/admin", "/debug", "/internal", "/swagger",
                                "/api-docs", "/graphql", "/phpinfo", "/.env", "/config"]
             for sp in sensitive_paths:
                 if sp in parsed.path.lower():
@@ -158,13 +169,14 @@ class APISecurityTester:
                         "owasp": "API2",
                         "cwe": "CWE-287",
                         "evidence": f"Found in {item['file']}",
+                        "file_path": item["file"],
                     })
 
     def _check_data_exposure(self):
         """Check for excessive data exposure in API responses."""
         exposure_patterns = {
             "User Data Fields": (
-                r"(?i)(password|ssn|social_security|credit_card|card_number|cvv|pin_code)",
+                r'(?i)["\'](?:password|ssn|social_security|credit_card|card_number|cvv|pin_code)["\']\s*[:=]',
                 "API may expose sensitive user data fields",
             ),
             "Debug Information": (
@@ -189,6 +201,7 @@ class APISecurityTester:
                         "owasp": "API3",
                         "cwe": "CWE-200",
                         "evidence": f"Sensitive fields in {item['file']}: {', '.join(set(matches[:5]))}",
+                        "file_path": item["file"],
                     })
 
     def _check_idor_patterns(self):
@@ -206,13 +219,15 @@ class APISecurityTester:
                 if re.search(pattern, item["content"]):
                     self.findings.append({
                         "title": "Potential IDOR Vulnerability",
-                        "severity": "high",
+                        "severity": "info",
                         "description": "API endpoints use predictable identifiers for accessing resources. "
-                                       "Verify proper authorization checks are in place.",
+                                       "This is advisory since server-side auth checks cannot be verified from static analysis.",
                         "category": "api",
                         "owasp": "API1",
                         "cwe": "CWE-639",
                         "evidence": f"ID-based resource access in {item['file']}",
+                        "confidence": "low",
+                        "file_path": item["file"],
                     })
                     return  # One finding is enough
 
@@ -221,7 +236,7 @@ class APISecurityTester:
         rate_limit_patterns = [
             r"(?i)rate.?limit", r"(?i)throttl",
             r"(?i)X-RateLimit", r"(?i)retry-after",
-            r"(?i)too.?many.?requests", r"(?i)429",
+            r"(?i)too.?many.?requests",
         ]
 
         found = False
@@ -236,9 +251,10 @@ class APISecurityTester:
         if not found:
             self.findings.append({
                 "title": "No Rate Limiting Detected",
-                "severity": "medium",
+                "severity": "info",
+                "confidence": "low",
                 "description": "No rate limiting implementation found. APIs without rate limiting "
-                               "are vulnerable to brute force and DoS attacks.",
+                               "are vulnerable to brute force and DoS attacks. Note: this is advisory since server-side rate limiting cannot be verified from static analysis.",
                 "category": "api",
                 "owasp": "API4",
                 "cwe": "CWE-770",
@@ -249,7 +265,9 @@ class APISecurityTester:
         """Check API versioning practices."""
         has_versioning = False
         for ep in self.api_endpoints:
-            if re.search(r"/v\d+/", ep.get("url", "")):
+            url = ep if isinstance(ep, str) else ep.get('url', '')
+                
+            if isinstance(url, str) and re.search(r"/v\d+", url):
                 has_versioning = True
                 break
 
@@ -291,6 +309,7 @@ class APISecurityTester:
                         "owasp": "API9",
                         "cwe": "CWE-200",
                         "evidence": f"Found in {item['file']}",
+                        "file_path": item["file"],
                     })
 
     def _check_injection_patterns(self):
@@ -319,8 +338,14 @@ class APISecurityTester:
         }
 
         for item in self._get_strings():
+            # Skip raw binary bytecode files — source-code injection patterns like 'new File(...) + param'
+            # produce spurious cross-line matches on compiled bytecode
+            if item["file"].endswith((".dex", ".so")):
+                continue
             for issue_name, (pattern, desc, cwe) in injection_patterns.items():
-                if re.search(pattern, item["content"]):
+                matches = line_scoped_search(item["content"], pattern, item["file"], max_matches=1)
+                if matches:
+                    m = matches[0]
                     self.findings.append({
                         "title": f"Injection Risk: {issue_name}",
                         "severity": "high",
@@ -328,5 +353,7 @@ class APISecurityTester:
                         "category": "api",
                         "owasp": "API4" if "SQL" in issue_name else "API8",
                         "cwe": cwe,
-                        "evidence": f"Found in {item['file']}",
+                        "evidence": f"Found in {item['file']}: {m.line_content[:100]}",
+                        "file_path": item["file"],
+                        "line_number": m.line_number,
                     })

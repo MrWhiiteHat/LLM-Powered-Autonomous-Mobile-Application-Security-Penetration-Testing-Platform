@@ -1,0 +1,6 @@
+{
+  "hardcoded_secrets": "1. Remove all hardcoded secrets from source code.\n2. Use environment variables or secure vaults.\n3. Implement secret rotation.\n4. Use Android Keystore/iOS Keychain for key storage.",
+  "certificate_pinning": "1. Implement certificate pinning using OkHttp CertificatePinner (Android) or TrustKit (iOS).\n2. Pin to the leaf or intermediate certificate.\n3. Include backup pins.\n4. Plan for pin rotation.",
+  "insecure_storage": "1. Use EncryptedSharedPreferences for Android.\n2. Use iOS Keychain with appropriate protection class.\n3. Never store sensitive data in external storage.\n4. Encrypt SQLite databases with SQLCipher.",
+  "network_security": "1. Enforce TLS 1.2 minimum.\n2. Implement Network Security Config (Android).\n3. Enable App Transport Security (iOS).\n4. Disable cleartext traffic."
+}

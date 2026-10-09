@@ -1,6 +1,6 @@
 # 🛡️ LLM-Powered Autonomous Mobile App Security Penetration Testing Platform
 
-> **Mobile Security Agent** is an advanced, fully autonomous orchestration platform designed to streamline and automate mobile application penetration testing through a robust 10-step security pipeline powered by a FastAPI backend and a local Vector Database (ChromaDB) for Retrieval-Augmented Generation (RAG).
+> **Mobile Security Agent** is an advanced, fully autonomous orchestration platform designed to streamline and automate mobile application penetration testing through a robust 10-phase security pipeline powered by a FastAPI backend and a database-less local hybrid RAG engine (TF-IDF + Okapi BM25) utilizing local LLMs.
 
 ![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.9%2B-brightgreen.svg)
@@ -14,23 +14,24 @@ The project operates entirely decoupled from managed databases or Docker runtime
 
 - **Frontend:** Vanilla JavaScript, HTML5, and CSS3 Dashboard interacting via asynchronous Fetch APIs.
 - **API Engine:** FastAPI executing deep OS-level routines and managing asynchronous penetration testing workers.
-- **RAG & Knowledge Base:** Local `ChromaDB` persisting OWASP mapping criteria (Mobile Top 10 & API Top 10). Dynamic vulnerability categorization.
+- **RAG & Knowledge Base:** Local, database-less hybrid vector index (1,974 reference documents) mapping findings to OWASP, CWE, and CAPEC standards.
+- **Local LLM Auditor:** Dynamic Zero-Day audit and cognitive false-positive suppression via local Qwen-3.5 4B model (via Ollama).
 - **Deployment Mechanics:** Built-in `deploy.py` leverages Paramiko to transport, initialize, and daemonize (`systemd`) the application onto raw Ubuntu VPS infrastructure safely over SSH.
 
 ---
 
-## 🔍 The 10-Step Security Pipeline
+## 🔍 The 10-Phase Security Pipeline
 
 When an APK/IPA is uploaded, it runs sequentially through:
 
 1. **Reconnaissance:** Initial OSINT and metadata gathering.
-2. **Static Code Analysis:** Extracting code logic, permissions, and hardcoded secrets.
+2. **Static Code & Zero-Day Heuristic Analysis:** Extracting code logic, permissions, secrets, and executing taint-flow, reflection, and behavioral profiling audits.
 3. **Reverse Engineering:** Inspecting configuration binaries, hidden URLs, and internal assets.
 4. **Storage Security Assessment:** Mapping local file caching and DB flaws.
 5. **Network Security:** TLS validations and cryptographic handshake flaws.
 6. **API Security:** Inspecting REST/GraphQL endpoints discovered within the binary.
 7. **Dynamic Runtime Analysis:** Memory validation, local instrumentation checks.
-8. **Vulnerability Mapping:** Aggregating identified indicators mapping to OWASP.
+8. **RAG Vulnerability Mapping:** Querying the hybrid local index to enrich findings with CWE/CAPEC/OWASP data.
 9. **Risk Assessment:** Contextualizing scores using CVSS schemas.
 10. **Report Generation:** Exporting `JSON` and `HTML` deliverables automatically.
 
