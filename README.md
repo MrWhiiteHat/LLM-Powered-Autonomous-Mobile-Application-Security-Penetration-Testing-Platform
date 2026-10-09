@@ -1,6 +1,6 @@
 # 🛡️ LLM-Powered Autonomous Mobile Application Security Penetration Testing Platform (MSA v2.0)
 
-[![License: Apache-2.0 / GPL-3.0](https://img.shields.io/badge/License-Apache_2.0_%7C_GPLv3-blue.svg)](LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109%2B-009688.svg)](https://fastapi.tiangolo.com/)
 [![Ollama](https://img.shields.io/badge/Ollama-Local%20LLM-black.svg)](https://ollama.com/)
@@ -349,9 +349,7 @@ The web dashboard is instantly accessible at **`http://localhost:8000`**.
 ├── requirements.txt                # Root Python dependencies pointer
 ├── CONTRIBUTING.md                 # Contribution guidelines & coding standards
 ├── SECURITY.md                     # Vulnerability reporting & ethical policies
-├── LICENSE                         # Master Dual License terms (Apache-2.0 OR GPL-3.0)
-├── LICENSE-APACHE                  # Apache License 2.0 full legal text
-├── LICENSE-GPL                     # GNU General Public License v3.0 full legal text
+├── LICENSE                         # GNU General Public License v3.0 (GPL-3.0)
 └── README.md                       # Master platform documentation
 ```
 
@@ -360,12 +358,7 @@ The web dashboard is instantly accessible at **`http://localhost:8000`**.
 ## 📜 License & Disclaimer
 
 ### License
-This project is dual-licensed under either the **[Apache License 2.0](LICENSE-APACHE)** or the **[GNU General Public License v3.0 (GPL-3.0)](LICENSE-GPL)**, at your option:
-
-- **Apache License 2.0:** Grants express patent licenses, protects contributors and organizations, and provides clear terms for enterprise and defensive tool integrations.
-- **GNU General Public License v3.0 (GPL-3.0):** Guarantees freedom to inspect, run, modify, and redistribute the platform under strong copyleft protections.
-
-See the [`LICENSE`](LICENSE), [`LICENSE-APACHE`](LICENSE-APACHE), and [`LICENSE-GPL`](LICENSE-GPL) files for complete legal terms.
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. See the [`LICENSE`](LICENSE) file for complete terms. Under this license, you are free to run, inspect, modify, and redistribute this platform, provided that any derivative works are also released under the GNU GPL v3.0.
 
 ### Ethical & Legal Disclaimer
 > [!IMPORTANT]
