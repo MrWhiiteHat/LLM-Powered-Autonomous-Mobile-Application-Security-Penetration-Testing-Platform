@@ -290,13 +290,34 @@ class FridaInstrumenter:
         try:
             subprocess.run([adb_path, "root"], capture_output=True, text=True, timeout=10, encoding="utf-8", errors="replace")
             subprocess.run([adb_path, "shell", "setenforce", "0"], capture_output=True, text=True, timeout=10, encoding="utf-8", errors="replace")
+
+            # Check if frida-server exists on device; push local candidate if missing
+            check_bin = subprocess.run([adb_path, "shell", "ls /data/local/tmp/frida-server"], capture_output=True, text=True, timeout=10, encoding="utf-8", errors="replace")
+            if "No such file" in check_bin.stdout or "No such file" in check_bin.stderr or check_bin.returncode != 0:
+                try:
+                    from config import BASE_DIR
+                    candidates = [
+                        BASE_DIR / "frida-server-x86",
+                        Path(__file__).resolve().parent / "frida-server-x86",
+                        BASE_DIR / "tools" / "frida-server-x86",
+                    ]
+                    for cand in candidates:
+                        if cand.exists():
+                            logger.info(f"Auto-pushing {cand.name} to /data/local/tmp/frida-server on device...")
+                            subprocess.run([adb_path, "push", str(cand), "/data/local/tmp/frida-server"], capture_output=True, timeout=60)
+                            subprocess.run([adb_path, "shell", "chmod", "755", "/data/local/tmp/frida-server"], capture_output=True, timeout=10)
+                            break
+                except Exception as push_err:
+                    logger.debug(f"Could not auto-push frida-server: {push_err}")
+
             ps_res = subprocess.run([adb_path, "shell", "ps -A | grep frida-server"], capture_output=True, text=True, timeout=10, encoding="utf-8", errors="replace")
             if "frida-server" not in ps_res.stdout:
                 logger.info("Starting frida-server on device...")
-                subprocess.run(
-                    [adb_path, "shell", "nohup /data/local/tmp/frida-server > /dev/null 2>&1 &"],
-                    capture_output=True, text=True, timeout=10, encoding="utf-8", errors="replace"
+                subprocess.Popen(
+                    [adb_path, "shell", "/data/local/tmp/frida-server -D"],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
                 )
+                time.sleep(2)
         except Exception as e:
             logger.debug(f"Device preparation notice: {e}")
 

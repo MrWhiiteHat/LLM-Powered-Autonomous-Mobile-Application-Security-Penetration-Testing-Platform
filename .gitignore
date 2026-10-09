@@ -81,6 +81,8 @@ MSPT_Project_Package/
 uploads/
 scans/
 reports/
+*frida-server*
+*.xz
 
 # Runtime DBs, LLM Caches & Results
 *.db

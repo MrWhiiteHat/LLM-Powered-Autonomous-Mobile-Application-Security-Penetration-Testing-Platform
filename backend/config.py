@@ -14,8 +14,8 @@ if ENV_FILE.exists():
             if line and "=" in line:
                 key, val = line.split("=", 1)
                 k = key.strip()
-                if k not in os.environ:
-                    os.environ[k] = val.strip().strip('"').strip("'")
+                cleaned_val = val.strip().strip('"').strip("'")
+                os.environ[k] = cleaned_val
     except Exception:
         pass
 

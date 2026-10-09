@@ -28,6 +28,8 @@ class LLMClient:
         self.provider = getattr(config, "LLM_PROVIDER", "ollama").lower()
         self.model = getattr(config, "LLM_MODEL", "qwen2.5-coder:1.5b")
         self.api_key = getattr(config, "LLM_API_KEY", "")
+        if not self.api_key and self.provider == "gemini":
+            self.api_key = os.getenv("GEMINI_API_KEY", "") or os.getenv("GOOGLE_API_KEY", "")
         self.custom_url = getattr(config, "LLM_API_URL", "")
         self._request_lock = threading.Lock()
         self._disabled_reason = ""
@@ -167,7 +169,7 @@ class LLMClient:
         # Build request headers and URL
         headers = {"Content-Type": "application/json"}
         api_url = api_url_gemini if self.provider == "gemini" else self.api_url
-        if self.provider in ("openai", "nvidia") and self.api_key:
+        if self.provider in ("openai", "nvidia", "gemini") and self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
 
         data = json.dumps(payload).encode("utf-8")
