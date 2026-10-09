@@ -815,6 +815,16 @@ class RAGEngine:
         # 3. Compile documents into the TF-IDF vector index
         self._build_vector_index()
 
+    @property
+    def documents(self):
+        """Public accessor for the indexed document corpus."""
+        return self._documents
+
+    @property
+    def metadata(self):
+        """Public accessor for document metadata."""
+        return self._metadata
+
     def _self_populate(self):
         """Write production-grade security rules to the knowledge directory if empty."""
         try:
