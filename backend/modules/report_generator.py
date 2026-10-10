@@ -13,8 +13,9 @@ logger = get_logger("ReportGenerator")
 
 
 class ReportGenerator:
-    def __init__(self, app_name: str, platform: str):
+    def __init__(self, app_name: str, platform: str, scan_id: str = None):
         self.app_name = app_name
+        self.scan_id = scan_id
         # Sanitize app_name for safe file paths on Windows
         self._safe_name = "".join(c for c in app_name if c.isalnum() or c in "._- ")
         self.platform = platform
@@ -25,6 +26,7 @@ class ReportGenerator:
     def generate_json(self, analysis_results: dict) -> Path:
         report = {
             "report_metadata": {
+                "scan_id": self.scan_id or f"scan_{self._safe_name}_{self._file_ts}",
                 "application_name": self.app_name,
                 "platform": self.platform,
                 "analysis_timestamp": self.timestamp,
@@ -37,6 +39,16 @@ class ReportGenerator:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(report, indent=2, default=str), encoding="utf-8")
         logger.info(f"JSON report saved: {path}")
+
+        # Also write report with explicit scan_id alias if provided
+        if self.scan_id:
+            alias_path = REPORT_DIR / f"report_{self.scan_id}.json"
+            if alias_path != path:
+                try:
+                    alias_path.write_text(json.dumps(report, indent=2, default=str), encoding="utf-8")
+                except Exception as e:
+                    logger.debug(f"Could not save alias report {alias_path}: {e}")
+
         return path
 
     def generate_html(self, analysis_results: dict) -> Path:
@@ -212,4 +224,14 @@ class ReportGenerator:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(html, encoding="utf-8")
         logger.info(f"HTML report saved: {path}")
+
+        # Also write report with explicit scan_id alias if provided
+        if self.scan_id:
+            alias_path = REPORT_DIR / f"report_{self.scan_id}.html"
+            if alias_path != path:
+                try:
+                    alias_path.write_text(html, encoding="utf-8")
+                except Exception as e:
+                    logger.debug(f"Could not save alias HTML report {alias_path}: {e}")
+
         return path

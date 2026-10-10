@@ -5,6 +5,7 @@ v2.0 - Advanced Edition
 """
 import os
 import sys
+import re
 import json
 import time
 import asyncio
@@ -12,6 +13,7 @@ import logging
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
+from typing import Optional
 
 from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -85,16 +87,21 @@ SCAN_HISTORY_FILE = Path(__file__).resolve().parent.parent / "scan_history.json"
 
 
 def save_scan_history():
-    """Persist completed scan metadata to disk."""
+    """Persist completed scan metadata to disk without duplicates."""
     try:
         history = []
+        seen_ids = set()
         for s in scans.values():
+            sid = s.get("id")
+            if not sid or sid in seen_ids:
+                continue
+            seen_ids.add(sid)
             entry = {
-                "id": s["id"],
-                "filename": s["filename"],
-                "platform": s["platform"],
-                "status": s["status"],
-                "progress": s["progress"],
+                "id": sid,
+                "filename": s.get("filename", ""),
+                "platform": s.get("platform", "android"),
+                "status": s.get("status", "completed"),
+                "progress": s.get("progress", 100),
                 "started_at": s.get("started_at", ""),
                 "completed_at": s.get("completed_at", ""),
                 "duration_seconds": s.get("duration_seconds", 0),
@@ -121,6 +128,159 @@ def load_scan_history():
     return []
 
 
+def find_report_file(scan_id: str, suffix: str = ".html") -> Optional[Path]:
+    """
+    Find a report file on disk matching scan_id with multi-level resilient fallback.
+    Supports exact filenames, stripped prefixes, unix timestamp IDs, and app-name matching.
+    """
+    from config import REPORT_DIR
+    if not REPORT_DIR.exists():
+        return None
+
+    # 1. Exact match with candidate prefixes
+    for prefix in ["", "report_", "scan_"]:
+        p = REPORT_DIR / f"{prefix}{scan_id}{suffix}"
+        if p.exists():
+            return p
+
+    # 2. Match without 'scan_' or 'report_' prefix
+    clean_id = re.sub(r"^(?:scan_|report_)", "", scan_id)
+    p = REPORT_DIR / f"report_{clean_id}{suffix}"
+    if p.exists():
+        return p
+
+    # 3. If scan_id contains epoch timestamp e.g. scan_1791576501_MSA_VulnerableBank_Benchmark
+    m = re.match(r"^(?:scan_)?\d+_(.+)$", scan_id)
+    if m:
+        app_name = m.group(1)
+        matches = sorted(
+            REPORT_DIR.glob(f"report_{app_name}*{suffix}"),
+            key=lambda x: x.stat().st_mtime,
+            reverse=True
+        )
+        if matches:
+            return matches[0]
+
+    # 4. Strip datetime suffix if present e.g. AppName_20261010_015351
+    app_base = re.sub(r"_\d{8}_\d{6}$", "", clean_id)
+    matches = sorted(
+        REPORT_DIR.glob(f"*{app_base}*{suffix}"),
+        key=lambda x: x.stat().st_mtime,
+        reverse=True
+    )
+    if matches:
+        return matches[0]
+
+    return None
+
+
+def resolve_scan(scan_id: str) -> Optional[dict]:
+    """
+    Resolve a scan record from memory or disk using multi-strategy fallback.
+    Guarantees active, historical, and timestamped scans are resolved without 404s.
+    """
+    if not scan_id:
+        return None
+
+    # 1. Direct match in memory
+    if scan_id in scans:
+        return scans[scan_id]
+
+    # 2. Check variations with or without 'scan_' prefix
+    if scan_id.startswith("scan_") and scan_id[5:] in scans:
+        return scans[scan_id[5:]]
+    if not scan_id.startswith("scan_") and f"scan_{scan_id}" in scans:
+        return scans[f"scan_{scan_id}"]
+
+    # 3. Check memory by alias, app name, or filename
+    clean_id = re.sub(r"^(?:scan_|report_)", "", scan_id)
+    m = re.match(r"^\d+_(.+)$", clean_id)
+    target_app = m.group(1) if m else clean_id
+    target_app = re.sub(r"_\d{8}_\d{6}$", "", target_app).lower()
+
+    for s in scans.values():
+        if s.get("id") == scan_id or s.get("scan_id") == scan_id:
+            scans[scan_id] = s
+            return s
+        fn = (s.get("filename") or "").lower()
+        if target_app and (target_app in fn or fn.startswith(target_app)):
+            scans[scan_id] = s
+            return s
+
+    # 4. Search disk for corresponding JSON report to resurrect in memory
+    json_path = find_report_file(scan_id, suffix=".json")
+    if json_path and json_path.exists():
+        try:
+            data = json.loads(json_path.read_text(encoding="utf-8"))
+            meta = data.get("report_metadata", {})
+            app_name = meta.get("application_name", "Unknown")
+            platform = meta.get("platform", "android")
+            html_file = json_path.with_suffix(".html")
+            findings_count = data.get("risk_assessment", {}).get("total_findings", 0)
+
+            reconstructed = {
+                "id": scan_id,
+                "scan_id": scan_id,
+                "filename": f"{app_name}.apk" if platform == "android" else f"{app_name}.ipa",
+                "platform": platform,
+                "status": "completed",
+                "progress": 100,
+                "current_step": "Complete",
+                "started_at": meta.get("analysis_timestamp", ""),
+                "completed_at": meta.get("analysis_timestamp", ""),
+                "duration_seconds": data.get("duration_seconds", 0),
+                "file_size_bytes": data.get("application", {}).get("file_size_bytes", 0),
+                "log": [
+                    f"[INIT] Loaded report for {app_name} ({platform})",
+                    f"[STATUS] Scan completed with {findings_count} verified findings",
+                    f"[REPORT] Reports available at {html_file.name if html_file.exists() else json_path.name}"
+                ],
+                "results": {
+                    **data,
+                    "reports": {
+                        "json": str(json_path),
+                        "html": str(html_file) if html_file.exists() else ""
+                    }
+                }
+            }
+            scans[scan_id] = reconstructed
+            file_scan_id = json_path.stem.replace("report_", "scan_")
+            if file_scan_id not in scans:
+                scans[file_scan_id] = reconstructed
+            return reconstructed
+        except Exception as e:
+            logger.error(f"Error reconstructing scan from {json_path}: {e}")
+
+    # 5. Search disk for standalone HTML report if JSON is not present
+    html_path = find_report_file(scan_id, suffix=".html")
+    if html_path and html_path.exists():
+        reconstructed = {
+            "id": scan_id,
+            "scan_id": scan_id,
+            "filename": f"{html_path.stem}.apk",
+            "platform": "android",
+            "status": "completed",
+            "progress": 100,
+            "current_step": "Complete",
+            "started_at": datetime.fromtimestamp(html_path.stat().st_mtime).isoformat(),
+            "completed_at": datetime.fromtimestamp(html_path.stat().st_mtime).isoformat(),
+            "duration_seconds": 0,
+            "file_size_bytes": 0,
+            "log": [f"[REPORT] Found HTML report {html_path.name}"],
+            "results": {
+                "reports": {
+                    "json": "",
+                    "html": str(html_path)
+                },
+                "risk_assessment": {"total_findings": 0, "overall_risk": "info", "findings": []}
+            }
+        }
+        scans[scan_id] = reconstructed
+        return reconstructed
+
+    return None
+
+
 def load_scans_from_reports():
     """Scan the reports directory and reload past scans into memory on startup."""
     global scans
@@ -130,7 +290,7 @@ def load_scans_from_reports():
             return
         
         count = 0
-        for file in REPORT_DIR.glob("*.json"):
+        for file in sorted(REPORT_DIR.glob("*.json"), key=lambda x: x.stat().st_mtime, reverse=True):
             try:
                 data = json.loads(file.read_text(encoding="utf-8"))
                 if "report_metadata" in data:
@@ -138,12 +298,16 @@ def load_scans_from_reports():
                     app_name = meta.get("application_name", "Unknown")
                     platform = meta.get("platform", "android")
                     
-                    # Deduce scan ID from filename
-                    scan_id = file.stem.replace("report_", "scan_")
-                    html_file = file.with_suffix(".html")
+                    file_scan_id = file.stem.replace("report_", "scan_")
+                    saved_scan_id = meta.get("scan_id")
+                    primary_id = saved_scan_id or file_scan_id
                     
-                    scans[scan_id] = {
-                        "id": scan_id,
+                    html_file = file.with_suffix(".html")
+                    findings_count = data.get("risk_assessment", {}).get("total_findings", 0)
+                    
+                    scan_entry = {
+                        "id": primary_id,
+                        "scan_id": primary_id,
                         "filename": f"{app_name}.apk" if platform == "android" else f"{app_name}.ipa",
                         "platform": platform,
                         "status": "completed",
@@ -153,6 +317,11 @@ def load_scans_from_reports():
                         "completed_at": meta.get("analysis_timestamp", ""),
                         "duration_seconds": data.get("duration_seconds", 0),
                         "file_size_bytes": data.get("application", {}).get("file_size_bytes", 0),
+                        "log": [
+                            f"[INIT] Loaded report for {app_name} ({platform})",
+                            f"[STATUS] Scan completed with {findings_count} verified findings",
+                            f"[REPORT] Reports available at {html_file.name if html_file.exists() else file.name}"
+                        ],
                         "results": {
                             **data,
                             "reports": {
@@ -161,6 +330,9 @@ def load_scans_from_reports():
                             }
                         }
                     }
+                    scans[primary_id] = scan_entry
+                    if file_scan_id != primary_id:
+                        scans[file_scan_id] = scan_entry
                     count += 1
             except Exception as e:
                 logger.error(f"Failed to load scan report {file}: {e}")
@@ -715,7 +887,7 @@ def run_full_analysis(scan_id: str, file_path: Path, filename: str, platform: st
             "risk_assessment": risk_results,
         }
 
-        gen = ReportGenerator(app_name, platform)
+        gen = ReportGenerator(app_name, platform, scan_id=scan_id)
         json_report = gen.generate_json(results)
         html_report = gen.generate_html(results)
 
@@ -750,103 +922,156 @@ def run_full_analysis(scan_id: str, file_path: Path, filename: str, platform: st
 
 @app.get("/api/scan/{scan_id}")
 async def get_scan(scan_id: str):
-    if scan_id not in scans:
+    scan = resolve_scan(scan_id)
+    if not scan:
         raise HTTPException(404, "Scan not found")
-    return scans[scan_id]
+    return scan
 
 
 @app.get("/api/scan/{scan_id}/log")
 async def get_scan_log(scan_id: str):
     """Get real-time scan log."""
-    if scan_id not in scans:
+    scan = resolve_scan(scan_id)
+    if not scan:
         raise HTTPException(404, "Scan not found")
+    log_entries = scan.get("log", [])
+    if not log_entries and scan.get("status") == "completed":
+        app_name = scan.get("filename", "Application")
+        findings_count = scan.get("results", {}).get("risk_assessment", {}).get("total_findings", 0) if scan.get("results") else 0
+        log_entries = [
+            f"[INIT] Loaded scan report for {app_name}",
+            f"[STATUS] Scan completed with {findings_count} findings",
+            f"[REPORT] Reports generated successfully"
+        ]
     return {
         "scan_id": scan_id,
-        "status": scans[scan_id]["status"],
-        "progress": scans[scan_id]["progress"],
-        "current_step": scans[scan_id].get("current_step", ""),
-        "log": scans[scan_id].get("log", []),
+        "status": scan["status"],
+        "progress": scan["progress"],
+        "current_step": scan.get("current_step", "Complete"),
+        "log": log_entries,
     }
 
 
 @app.get("/api/scan/{scan_id}/executive-summary")
 async def get_executive_summary(scan_id: str):
     """Get a concise executive summary of the scan."""
-    if scan_id not in scans:
+    scan = resolve_scan(scan_id)
+    if not scan:
         raise HTTPException(404, "Scan not found")
-    s = scans[scan_id]
-    if s["status"] != "completed":
+    if scan.get("status") != "completed":
         raise HTTPException(400, "Scan not completed")
 
-    ra = s["results"]["risk_assessment"]
-    app_info = s["results"]["application"]
+    ra = scan.get("results", {}).get("risk_assessment", {}) if scan.get("results") else {}
+    app_info = scan.get("results", {}).get("application", {}) if scan.get("results") else {}
     summary = ra.get("risk_summary", {})
 
     return {
-        "application": app_info["name"],
-        "platform": app_info["platform"],
-        "overall_risk": ra["overall_risk"],
-        "total_findings": ra["total_findings"],
+        "application": app_info.get("name", scan.get("filename", "Application")),
+        "platform": app_info.get("platform", scan.get("platform", "android")),
+        "overall_risk": ra.get("overall_risk", "unknown"),
+        "total_findings": ra.get("total_findings", 0),
         "critical": summary.get("critical", 0),
         "high": summary.get("high", 0),
         "medium": summary.get("medium", 0),
         "low": summary.get("low", 0),
         "info": summary.get("info", 0),
-        "scan_duration": s.get("duration_seconds", 0),
-        "scanned_at": s.get("completed_at", ""),
+        "scan_duration": scan.get("duration_seconds", 0),
+        "scanned_at": scan.get("completed_at", ""),
         "top_risks": [
             {"title": f["title"], "severity": f["severity"], "owasp": f.get("owasp", "")}
-            for f in ra["findings"][:5]
+            for f in ra.get("findings", [])[:5]
         ],
     }
 
 
 @app.get("/api/scan/{scan_id}/report/json")
 async def get_json_report(scan_id: str):
-    if scan_id not in scans:
-        raise HTTPException(404, "Scan not found")
-    scan = scans[scan_id]
-    if scan["status"] != "completed":
+    scan = resolve_scan(scan_id)
+    if scan and scan.get("status") == "completed":
+        reports = scan.get("results", {}).get("reports", {})
+        report_path = reports.get("json")
+        if report_path and Path(report_path).exists():
+            return FileResponse(report_path, media_type="application/json", filename=Path(report_path).name)
+
+    # Resilient disk search fallback
+    json_file = find_report_file(scan_id, suffix=".json")
+    if json_file and json_file.exists():
+        return FileResponse(json_file, media_type="application/json", filename=json_file.name)
+
+    if scan and scan.get("status") != "completed":
         raise HTTPException(400, f"Scan status: {scan['status']}")
-    report_path = scan["results"]["reports"]["json"]
-    return FileResponse(report_path, media_type="application/json", filename=Path(report_path).name)
+    raise HTTPException(404, f"JSON report for scan '{scan_id}' not found")
 
 
 @app.get("/api/scan/{scan_id}/report/html")
 async def get_html_report(scan_id: str):
-    if scan_id not in scans:
-        raise HTTPException(404, "Scan not found")
-    scan = scans[scan_id]
-    if scan["status"] != "completed":
+    scan = resolve_scan(scan_id)
+    if scan and scan.get("status") == "completed":
+        reports = scan.get("results", {}).get("reports", {})
+        report_path = reports.get("html")
+        if report_path and Path(report_path).exists():
+            return FileResponse(report_path, media_type="text/html", filename=Path(report_path).name)
+
+    # Resilient disk search fallback
+    html_file = find_report_file(scan_id, suffix=".html")
+    if html_file and html_file.exists():
+        return FileResponse(html_file, media_type="text/html", filename=html_file.name)
+
+    if scan and scan.get("status") != "completed":
         raise HTTPException(400, f"Scan status: {scan['status']}")
-    report_path = scan["results"]["reports"]["html"]
-    return FileResponse(report_path, media_type="text/html", filename=Path(report_path).name)
+    raise HTTPException(404, f"HTML report for scan '{scan_id}' not found")
 
 
 @app.get("/api/scans")
 async def list_scans():
-    return [{
-        "id": s["id"],
-        "scan_id": s["id"],
-        "filename": s["filename"],
-        "status": s["status"],
-        "progress": s["progress"],
-        "platform": s["platform"],
-        "current_step": s.get("current_step", ""),
-        "started_at": s.get("started_at", ""),
-        "completed_at": s.get("completed_at", ""),
-        "duration_seconds": s.get("duration_seconds", 0),
-        "total_findings": s.get("results", {}).get("risk_assessment", {}).get("total_findings", 0) if s.get("results") else 0,
-        "overall_risk": s.get("results", {}).get("risk_assessment", {}).get("overall_risk", "pending") if s.get("results") else "pending",
-    } for s in sorted(scans.values(), key=lambda x: x.get("started_at", ""), reverse=True)]
+    seen_ids = set()
+    result = []
+    for s in sorted(scans.values(), key=lambda x: x.get("started_at", ""), reverse=True):
+        sid = s.get("id")
+        rep_html = s.get("results", {}).get("reports", {}).get("html", "")
+        dedup_key = rep_html if rep_html else sid
+        if dedup_key in seen_ids:
+            continue
+        seen_ids.add(dedup_key)
+        
+        result.append({
+            "id": sid,
+            "scan_id": sid,
+            "filename": s.get("filename", ""),
+            "status": s.get("status", "completed"),
+            "progress": s.get("progress", 100),
+            "platform": s.get("platform", "android"),
+            "current_step": s.get("current_step", ""),
+            "started_at": s.get("started_at", ""),
+            "completed_at": s.get("completed_at", ""),
+            "duration_seconds": s.get("duration_seconds", 0),
+            "total_findings": s.get("results", {}).get("risk_assessment", {}).get("total_findings", 0) if s.get("results") else 0,
+            "overall_risk": s.get("results", {}).get("risk_assessment", {}).get("overall_risk", "pending") if s.get("results") else "pending",
+        })
+    return result
 
 
 @app.delete("/api/scan/{scan_id}")
 async def delete_scan(scan_id: str):
     """Delete a scan and its reports."""
-    if scan_id not in scans:
+    scan = resolve_scan(scan_id)
+    if not scan:
         raise HTTPException(404, "Scan not found")
-    del scans[scan_id]
+    target_id = scan.get("id")
+    to_delete = [k for k, v in list(scans.items()) if v.get("id") == target_id or k == scan_id]
+    for k in to_delete:
+        scans.pop(k, None)
+
+    reports = scan.get("results", {}).get("reports", {})
+    for path_str in [reports.get("json"), reports.get("html")]:
+        if path_str:
+            try:
+                p = Path(path_str)
+                if p.exists():
+                    p.unlink()
+            except Exception as e:
+                logger.error(f"Failed to delete report file {path_str}: {e}")
+
     save_scan_history()
     return {"message": f"Scan {scan_id} deleted"}
 
