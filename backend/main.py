@@ -101,7 +101,7 @@ def save_scan_history():
                 "filename": s.get("filename", ""),
                 "platform": s.get("platform", "android"),
                 "status": s.get("status", "completed"),
-                "progress": s.get("progress", 100),
+                "progress": s.get("progress", 0),
                 "started_at": s.get("started_at", ""),
                 "completed_at": s.get("completed_at", ""),
                 "duration_seconds": s.get("duration_seconds", 0),
@@ -424,7 +424,7 @@ async def get_stats():
     platforms = defaultdict(int)
 
     for s in completed:
-        ra = s.get("results", {}).get("risk_assessment", {})
+        ra = (s.get("results") or {}).get("risk_assessment") or {}
         for k, v in ra.get("risk_summary", {}).items():
             severity_totals[k] += v
         for f in ra.get("findings", []):
@@ -937,7 +937,8 @@ async def get_scan_log(scan_id: str):
     log_entries = scan.get("log", [])
     if not log_entries and scan.get("status") == "completed":
         app_name = scan.get("filename", "Application")
-        findings_count = scan.get("results", {}).get("risk_assessment", {}).get("total_findings", 0) if scan.get("results") else 0
+        res = scan.get("results") or {}
+        findings_count = (res.get("risk_assessment") or {}).get("total_findings", 0)
         log_entries = [
             f"[INIT] Loaded scan report for {app_name}",
             f"[STATUS] Scan completed with {findings_count} findings",
@@ -945,8 +946,8 @@ async def get_scan_log(scan_id: str):
         ]
     return {
         "scan_id": scan_id,
-        "status": scan["status"],
-        "progress": scan["progress"],
+        "status": scan.get("status", "running"),
+        "progress": scan.get("progress", 0),
         "current_step": scan.get("current_step", "Complete"),
         "log": log_entries,
     }
@@ -961,9 +962,10 @@ async def get_executive_summary(scan_id: str):
     if scan.get("status") != "completed":
         raise HTTPException(400, "Scan not completed")
 
-    ra = scan.get("results", {}).get("risk_assessment", {}) if scan.get("results") else {}
-    app_info = scan.get("results", {}).get("application", {}) if scan.get("results") else {}
-    summary = ra.get("risk_summary", {})
+    res = scan.get("results") or {}
+    ra = res.get("risk_assessment") or {}
+    app_info = res.get("application") or {}
+    summary = ra.get("risk_summary") or {}
 
     return {
         "application": app_info.get("name", scan.get("filename", "Application")),
@@ -988,7 +990,8 @@ async def get_executive_summary(scan_id: str):
 async def get_json_report(scan_id: str):
     scan = resolve_scan(scan_id)
     if scan and scan.get("status") == "completed":
-        reports = scan.get("results", {}).get("reports", {})
+        res = scan.get("results") or {}
+        reports = res.get("reports") or {}
         report_path = reports.get("json")
         if report_path and Path(report_path).exists():
             return FileResponse(report_path, media_type="application/json", filename=Path(report_path).name)
@@ -1007,7 +1010,8 @@ async def get_json_report(scan_id: str):
 async def get_html_report(scan_id: str):
     scan = resolve_scan(scan_id)
     if scan and scan.get("status") == "completed":
-        reports = scan.get("results", {}).get("reports", {})
+        res = scan.get("results") or {}
+        reports = res.get("reports") or {}
         report_path = reports.get("html")
         if report_path and Path(report_path).exists():
             return FileResponse(report_path, media_type="text/html", filename=Path(report_path).name)
@@ -1028,25 +1032,28 @@ async def list_scans():
     result = []
     for s in sorted(scans.values(), key=lambda x: x.get("started_at", ""), reverse=True):
         sid = s.get("id")
-        rep_html = s.get("results", {}).get("reports", {}).get("html", "")
+        res = s.get("results") or {}
+        reports = res.get("reports") or {}
+        rep_html = reports.get("html", "")
         dedup_key = rep_html if rep_html else sid
         if dedup_key in seen_ids:
             continue
         seen_ids.add(dedup_key)
         
+        risk_assess = res.get("risk_assessment") or {}
         result.append({
             "id": sid,
             "scan_id": sid,
             "filename": s.get("filename", ""),
-            "status": s.get("status", "completed"),
-            "progress": s.get("progress", 100),
+            "status": s.get("status", "running"),
+            "progress": s.get("progress", 0),
             "platform": s.get("platform", "android"),
             "current_step": s.get("current_step", ""),
             "started_at": s.get("started_at", ""),
             "completed_at": s.get("completed_at", ""),
             "duration_seconds": s.get("duration_seconds", 0),
-            "total_findings": s.get("results", {}).get("risk_assessment", {}).get("total_findings", 0) if s.get("results") else 0,
-            "overall_risk": s.get("results", {}).get("risk_assessment", {}).get("overall_risk", "pending") if s.get("results") else "pending",
+            "total_findings": risk_assess.get("total_findings", 0),
+            "overall_risk": risk_assess.get("overall_risk", "pending"),
         })
     return result
 
@@ -1062,7 +1069,7 @@ async def delete_scan(scan_id: str):
     for k in to_delete:
         scans.pop(k, None)
 
-    reports = scan.get("results", {}).get("reports", {})
+    reports = (scan.get("results") or {}).get("reports") or {}
     for path_str in [reports.get("json"), reports.get("html")]:
         if path_str:
             try:
